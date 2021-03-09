@@ -159,6 +159,7 @@ class License
         $validFor          = null;
         $expiresAt         = null;
         $timesActivatedMax = null;
+        $usersNumber       = null;
 
         if (array_key_exists('order_id', $_POST) && $_POST['order_id']) {
             $orderId = $_POST['order_id'];
@@ -182,8 +183,12 @@ class License
             $expiresAt = $_POST['expires_at'];
         }
 
+        if (array_key_exists('users_number', $_POST) && $_POST['users_number']) {
+            $timesActivatedMax = absint($_POST['users_number']);
+        }
+
         if (array_key_exists('times_activated_max', $_POST) && $_POST['times_activated_max']) {
-            $timesActivatedMax = absint($_POST['times_activated_max']);
+            $usersNumber = absint($_POST['times_activated_max']);
         }
 
         if (apply_filters('lmfwc_duplicate', $_POST['license_key'])) {
@@ -204,7 +209,8 @@ class License
                 'valid_for'           => $validFor,
                 'source'              => LicenseSource::IMPORT,
                 'status'              => $status,
-                'times_activated_max' => $timesActivatedMax
+                'times_activated_max' => $timesActivatedMax,
+                'users_number'        => $usersNumber
             )
         );
 
@@ -244,6 +250,7 @@ class License
         $validFor          = null;
         $expiresAt         = null;
         $timesActivatedMax = null;
+        $usersNumber       = null;
 
         /** @var LicenseResourceModel $oldLicense */
         $oldLicense = LicenseResourceRepository::instance()->find($licenseId);
@@ -269,7 +276,11 @@ class License
             $validFor  = null;
             $expiresAt = $_POST['expires_at'];
         }
-
+        
+        if (array_key_exists('users_number', $_POST) && $_POST['users_number']) {
+            $usersNumber = absint($_POST['users_number']);
+        }
+        
         if (array_key_exists('times_activated_max', $_POST) && $_POST['times_activated_max']) {
             $timesActivatedMax = absint($_POST['times_activated_max']);
         }
@@ -299,7 +310,8 @@ class License
                 'valid_for'           => $validFor,
                 'source'              => $_POST['source'],
                 'status'              => $status,
-                'times_activated_max' => $timesActivatedMax
+                'times_activated_max' => $timesActivatedMax,
+                'users_number'        => $usersNumber
             )
         );
 

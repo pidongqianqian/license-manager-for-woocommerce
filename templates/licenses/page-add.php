@@ -36,6 +36,15 @@
             </td>
         </tr>
 
+        <!-- USERS NUMBER -->
+        <tr scope="row">
+            <th scope="row"><label for="single__times_activated_max"><?php esc_html_e('Number of users', 'license-manager-for-woocommerce');?></label></th>
+            <td>
+                <input name="times_activated_max" id="single__times_activated_max" class="regular-text" type="number">
+                <p class="description"><?php esc_html_e('The maximum number of server users. If you leave it blank, the number of users is not limited.', 'license-manager-for-woocommerce');?></p>
+            </td>
+        </tr>
+
         <!-- TIMES ACTIVATED MAX -->
         <tr scope="row">
             <th scope="row"><label for="single__times_activated_max"><?php esc_html_e('Maximum activation count', 'license-manager-for-woocommerce');?></label></th>

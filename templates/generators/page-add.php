@@ -78,6 +78,18 @@
                 </td>
             </tr>
 
+            <!-- USERS NUMBER -->
+            <tr scope="row">
+                <th scope="row"><label for="expires_in"><?php esc_html_e('Number of users', 'license-manager-for-woocommerce');?></label></th>
+                <td>
+                    <input name="expires_in" id="expires_in" class="regular-text" type="text">
+                    <p class="description" id="tagline-description">
+                        <b><?php esc_html_e('Optional.', 'license-manager-for-woocommerce');?></b>
+                        <span><?php esc_html_e('The maximum number of server users. If you leave it blank, the number of users is not limited.', 'license-manager-for-woocommerce');?></span>
+                    </p>
+                </td>
+            </tr>
+
             <!-- SEPARATOR -->
             <tr scope="row">
                 <th scope="row"><label for="separator"><?php esc_html_e('Separator', 'license-manager-for-woocommerce');?></label></th>

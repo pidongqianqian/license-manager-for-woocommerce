@@ -66,7 +66,8 @@ class Generator
                 'separator'           => $_POST['separator'],
                 'prefix'              => $_POST['prefix'],
                 'suffix'              => $_POST['suffix'],
-                'expires_in'          => $_POST['expires_in']
+                'expires_in'          => $_POST['expires_in'],
+                'users_number'        => $_POST['users_number']
             )
         );
 
@@ -161,7 +162,8 @@ class Generator
                 'separator'           => $_POST['separator'],
                 'prefix'              => $_POST['prefix'],
                 'suffix'              => $_POST['suffix'],
-                'expires_in'          => $_POST['expires_in']
+                'expires_in'          => $_POST['expires_in'],
+                'users_number'        => $_POST['users_number']
             )
         );
 

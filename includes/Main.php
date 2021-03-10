@@ -274,7 +274,7 @@ final class Main extends Singleton
         new Export();
         new AdminMenus();
         new AdminNotice();
-        new GeneratorRSA();
+        new Generator();
         new Repositories\PostMeta();
         new Repositories\Users();
         new LicenseController();

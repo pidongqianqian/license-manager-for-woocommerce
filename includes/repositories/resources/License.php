@@ -38,6 +38,7 @@ class License extends AbstractResourceRepository implements ResourceRepositoryIn
             'status'              => ColumnTypeEnum::TINYINT,
             'times_activated'     => ColumnTypeEnum::INT,
             'times_activated_max' => ColumnTypeEnum::INT,
+            'users_number'        => ColumnTypeEnum::INT,
         );
     }
 }

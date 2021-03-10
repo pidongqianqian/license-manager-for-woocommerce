@@ -81,6 +81,11 @@ class Generator extends AbstractResourceModel implements ModelInterface
     protected $updatedBy;
 
     /**
+     * @var int
+     */
+    protected $usersNumber;
+
+    /**
      * Generator constructor.
      *
      * @param stdClass $generator
@@ -97,6 +102,7 @@ class Generator extends AbstractResourceModel implements ModelInterface
         $this->chunks            = intval($generator->chunks);
         $this->chunkLength       = intval($generator->chunk_length);
         $this->timesActivatedMax = $generator->times_activated_max;
+        $this->usersNumber       = intval($generator->users_number);
         $this->separator         = $generator->separator;
         $this->prefix            = $generator->prefix;
         $this->suffix            = $generator->suffix;
@@ -330,5 +336,20 @@ class Generator extends AbstractResourceModel implements ModelInterface
     {
         $this->updatedBy = $updatedBy;
     }
-}
 
+    /**
+     * @return int
+     */
+    public function getUsersNumber()
+    {
+        return $this->usersNumber;
+    }
+
+    /**
+     * @param int $usersNumber
+     */
+    public function setUsersNumber($usersNumber)
+    {
+        $this->usersNumber = $usersNumber;
+    }
+}

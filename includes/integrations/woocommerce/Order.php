@@ -4,9 +4,9 @@ namespace LicenseManagerForWooCommerce\Integrations\WooCommerce;
 
 use LicenseManagerForWooCommerce\Enums\LicenseStatus;
 use LicenseManagerForWooCommerce\Lists\LicensesList;
-use LicenseManagerForWooCommerce\Models\Resources\GeneratorRSA as GeneratorResourceModel;
+use LicenseManagerForWooCommerce\Models\Resources\Generator as GeneratorResourceModel;
 use LicenseManagerForWooCommerce\Models\Resources\License as LicenseResourceModel;
-use LicenseManagerForWooCommerce\Repositories\Resources\GeneratorRSA as GeneratorResourceRepository;
+use LicenseManagerForWooCommerce\Repositories\Resources\Generator as GeneratorResourceRepository;
 use LicenseManagerForWooCommerce\Repositories\Resources\License as LicenseResourceRepository;
 use LicenseManagerForWooCommerce\Settings;
 use WC_Order_Item_Product;

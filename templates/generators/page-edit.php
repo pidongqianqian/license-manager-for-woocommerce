@@ -103,9 +103,9 @@ defined('ABSPATH') || exit;
 
             <!-- USERS NUMBER -->
             <tr scope="row">
-                <th scope="row"><label for="expires_in"><?php esc_html_e('Users number', 'license-manager-for-woocommerce');?></label></th>
+                <th scope="row"><label for="users_number"><?php esc_html_e('Users number', 'license-manager-for-woocommerce');?></label></th>
                 <td>
-                    <input name="expires_in" id="expires_in" class="regular-text" type="text">
+                    <input name="users_number" id="users_number" class="regular-text" type="number" value="<?php echo esc_html($generator->getUsersNumber()); ?>">
                     <p class="description" id="tagline-description">
                         <b><?php esc_html_e('Optional.', 'license-manager-for-woocommerce');?></b>
                         <span><?php esc_html_e('The maximum number of server users. If you leave it blank, the number of users is not limited.', 'license-manager-for-woocommerce');?></span>

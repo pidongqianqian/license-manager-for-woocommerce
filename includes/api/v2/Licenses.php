@@ -606,6 +606,10 @@ class Licenses extends LMFWC_REST_Controller
 
         try {
             /** @var LicenseResourceModel $license */
+            if ($licenseKey === 'key-rsa') {
+                $params = $request->get_query_params();
+                $licenseKey = $params['key'];
+            }
             $license = LicenseResourceRepository::instance()->findBy(
                 array(
                     'hash' => apply_filters('lmfwc_hash', $licenseKey)
@@ -844,6 +848,11 @@ class Licenses extends LMFWC_REST_Controller
 
         try {
             /** @var LicenseResourceModel $license */
+            if ($licenseKey === 'key-rsa') {
+                $params = $request->get_query_params();
+                $licenseKey = $params['key'];
+            }
+
             $license = LicenseResourceRepository::instance()->findBy(
                 array(
                     'hash' => apply_filters('lmfwc_hash', $licenseKey)

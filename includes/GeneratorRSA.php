@@ -30,33 +30,30 @@ class GeneratorRSA
      */
     private function generateLicenseString($charset, $chunks, $chunkLength, $separator, $prefix, $suffix)
     {
-        return $this->testRSA($charset, $chunks, $chunkLength, $separator, $prefix, $suffix);
-//        $charsetLength = strlen($charset);
-//        $licenseString = $prefix;
-//
-//        // loop through the chunks
-//        for ($i=0; $i < $chunks; $i++) {
-//            // add n random characters from $charset to chunk, where n = $chunkLength
-//            for ($j = 0; $j < $chunkLength; $j++) {
-//                $licenseString .= $charset[rand(0, $charsetLength - 1)];
-//            }
-//            // do not add the separator on the last iteration
-//            if ($i < $chunks - 1) {
-//                $licenseString .= $separator;
-//            }
-//        }
-//
-//        $licenseString .= $suffix;
-//
-//        return $licenseString;
+        $charsetLength = strlen($charset);
+        $licenseString = $prefix;
+
+        // loop through the chunks
+        for ($i=0; $i < $chunks; $i++) {
+            // add n random characters from $charset to chunk, where n = $chunkLength
+            for ($j = 0; $j < $chunkLength; $j++) {
+                $licenseString .= $charset[rand(0, $charsetLength - 1)];
+            }
+            // do not add the separator on the last iteration
+            if ($i < $chunks - 1) {
+                $licenseString .= $separator;
+            }
+        }
+
+        $licenseString .= $suffix;
+
+        return $licenseString;
     }
     
-    public function testRSA($charset, $chunks, $chunkLength, $separator, $prefix, $suffix) {
-        $usersNumber = 9;
-        $expDays = 30;
+    public function generateLicenseStringUseRSA($validFor, $usersNumber) {
         $payload = array(
             "users_number" => $usersNumber,
-            "exp_days"=> $expDays,
+            "valid_for"=> $validFor,
             "iss" => "nodefy.me",
             "aud" => "nodefy.me",
             "iat" => 1356999524,
@@ -126,13 +123,9 @@ EOD;
 
         // Generate the license strings
         for ($i = 0; $i < $amount; $i++) {
-            $licenses[] = $this->generateLicenseString(
-                $generator->getCharset(),
-                $generator->getChunks(),
-                $generator->getChunkLength(),
-                $generator->getSeparator(),
-                $generator->getPrefix(),
-                $generator->getSuffix()
+            $licenses[] = $this->generateLicenseStringUseRSA(
+                $generator->getExpiresIn(),
+                $generator->getUsersNumber()
             );
         }
 

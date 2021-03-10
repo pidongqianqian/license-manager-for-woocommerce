@@ -33,7 +33,7 @@ if ($migrationMode === Migration::MODE_UP) {
     
     $sql = "
         ALTER TABLE {$tableGenerators}
-            ADD COLUMN `users_number` INT(10) NULL DEFAULT NULL COMMENT 'Maximum number of users' AFTER `expires_in`,
+            ADD COLUMN `users_number` INT(10) NULL DEFAULT NULL COMMENT 'Maximum number of users' AFTER `times_activated_max`,
     ";
 
     $wpdb->query($sql);

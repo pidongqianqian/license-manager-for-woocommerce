@@ -34,7 +34,7 @@ class Setup
     /**
      * @var int
      */
-    const DB_VERSION = 107;
+    const DB_VERSION = 108;
 
     /**
      * Installation script.
@@ -142,6 +142,7 @@ class Setup
                 `status` TINYINT(1) UNSIGNED NOT NULL,
                 `times_activated` INT(10) UNSIGNED NULL DEFAULT NULL,
                 `times_activated_max` INT(10) UNSIGNED NULL DEFAULT NULL,
+                `users_number` INT(10) UNSIGNED NULL DEFAULT NULL,
                 `created_at` DATETIME NULL,
                 `created_by` BIGINT(20) UNSIGNED NULL DEFAULT NULL,
                 `updated_at` DATETIME NULL DEFAULT NULL,
@@ -158,6 +159,7 @@ class Setup
                 `chunks` INT(10) UNSIGNED NOT NULL,
                 `chunk_length` INT(10) UNSIGNED NOT NULL,
                 `times_activated_max` INT(10) UNSIGNED NULL DEFAULT NULL,
+                `users_number` INT(10) UNSIGNED NULL DEFAULT NULL,
                 `separator` VARCHAR(255) NULL DEFAULT NULL,
                 `prefix` VARCHAR(255) NULL DEFAULT NULL,
                 `suffix` VARCHAR(255) NULL DEFAULT NULL,

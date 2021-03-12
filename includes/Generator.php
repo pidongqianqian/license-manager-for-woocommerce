@@ -58,8 +58,7 @@ class Generator
             "valid_for"=> $validFor,
             "iss" => "nodefy.me",
             "aud" => "nodefy.me",
-            "iat" => 1356999524,
-            "nbf" => 1357000000,
+            "iat" => time()
         );
         $privateKey = <<<EOD
 -----BEGIN RSA PRIVATE KEY-----

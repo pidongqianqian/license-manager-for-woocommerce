@@ -34,7 +34,7 @@ class Setup
     /**
      * @var int
      */
-    const DB_VERSION = 108;
+    const DB_VERSION = 109;
 
     /**
      * Installation script.
@@ -143,6 +143,7 @@ class Setup
                 `times_activated` INT(10) UNSIGNED NULL DEFAULT NULL,
                 `times_activated_max` INT(10) UNSIGNED NULL DEFAULT NULL,
                 `users_number` INT(10) UNSIGNED NULL DEFAULT NULL,
+                `info` TEXT NOT NULL DEFAULT '' COMMENT 'server info: mac, ip',
                 `created_at` DATETIME NULL,
                 `created_by` BIGINT(20) UNSIGNED NULL DEFAULT NULL,
                 `updated_at` DATETIME NULL DEFAULT NULL,

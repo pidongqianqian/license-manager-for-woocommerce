@@ -623,6 +623,28 @@ class LicensesList extends WP_List_Table
     }
 
     /**
+     * Info column.
+     *
+     * @param array $item Associative array of column name and value pairs
+     *
+     * @throws Exception
+     * @return string
+     */
+    public function column_info($item)
+    {
+        if (!$item['info']) {
+            return '';
+        }
+
+        $infos = unserialize($item['info']);
+        return sprintf(
+            '<span>mac: %s<br>ip: %s</span>',
+            $infos['mac'],
+            $infos['ip']
+        );
+    }
+
+    /**
      * Expires at column.
      *
      * @param array $item Associative array of column name and value pairs
@@ -943,6 +965,7 @@ class LicensesList extends WP_List_Table
             'expires_at'  => __('Expires at', 'license-manager-for-woocommerce'),
             'valid_for'   => __('Valid for', 'license-manager-for-woocommerce'),
             'status'      => __('Status', 'license-manager-for-woocommerce'),
+            'info'        => __('Info', 'license-manager-for-woocommerce'),
             'created'     => __('Created', 'license-manager-for-woocommerce'),
             'updated'     => __('Updated', 'license-manager-for-woocommerce')
         );

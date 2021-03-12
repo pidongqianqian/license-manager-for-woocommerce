@@ -96,6 +96,11 @@ class License extends AbstractResourceModel implements ModelInterface
     protected $usersNumber;
 
     /**
+     * @var string
+     */
+    protected $info;
+
+    /**
      * License constructor.
      *
      * @param stdClass $license
@@ -119,6 +124,7 @@ class License extends AbstractResourceModel implements ModelInterface
         $this->timesActivated    = $license->times_activated     === null ? null : intval($license->times_activated);
         $this->timesActivatedMax = $license->times_activated_max === null ? null : intval($license->times_activated_max);
         $this->usersNumber       = $license->users_number        === null ? null : intval($license->users_number);
+        $this->info              = $license->info;
         $this->createdAt         = $license->created_at;
         $this->createdBy         = $license->created_by === null ? null : intval($license->created_by);
         $this->updatedAt         = $license->updated_at;
@@ -403,5 +409,21 @@ class License extends AbstractResourceModel implements ModelInterface
     public function setUsersNumber($usersNumber)
     {
         $this->usersNumber = $usersNumber;
+    }
+
+    /**
+     * @return string
+     */
+    public function getInfo()
+    {
+        return $this->info;
+    }
+
+    /**
+     * @param string $info
+     */
+    public function setInfo($info)
+    {
+        $this->info = $info;
     }
 }

@@ -649,7 +649,19 @@ class Licenses extends LMFWC_REST_Controller
             $timesActivatedMax = absint($license->getTimesActivatedMax());
         }
 
-        if ($timesActivatedMax && ($timesActivated >= $timesActivatedMax)) {
+        $mac = sanitize_text_field($request->get_param('mac'));
+        $ip = sanitize_text_field($request->get_param('ip'));
+        
+        $infos = array();
+        if ($license->getInfo() !== '') {
+            $infos = unserialize($license->getInfo());
+        }
+        $isSameServer = false;
+        if (count($infos) > 0 && $infos['mac'] === $mac && $infos['ip'] === $ip) {
+            $isSameServer = true;
+        }
+        
+        if (!$isSameServer && $timesActivatedMax && ($timesActivated >= $timesActivatedMax)) {
             return new WP_Error(
                 'lmfwc_rest_data_error',
                 sprintf(
@@ -659,23 +671,26 @@ class Licenses extends LMFWC_REST_Controller
                 array('status' => 404)
             );
         }
-
+        
         // Activate the license key
         try {
-            if (!$timesActivated) {
-                $timesActivatedNew = 1;
-            }
-
-            else {
-                $timesActivatedNew = intval($timesActivated) + 1;
+            $update = array();
+            if (!$isSameServer) {
+                if (!$timesActivated) {
+                    $timesActivatedNew = 1;
+                } else {
+                    $timesActivatedNew = intval($timesActivated) + 1;
+                }
+                $update = array(
+                    'times_activated' => $timesActivatedNew,
+                    'info' => serialize(['mac'=> $mac, 'ip'=> $ip])
+                );
             }
 
             /** @var LicenseResourceModel $updatedLicense */
             $updatedLicense = LicenseResourceRepository::instance()->update(
                 $license->getId(),
-                array(
-                    'times_activated' => $timesActivatedNew
-                )
+                $update
             );
         } catch (Exception $e) {
             return new WP_Error(

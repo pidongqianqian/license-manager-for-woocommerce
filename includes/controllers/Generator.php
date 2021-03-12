@@ -37,33 +37,33 @@ class Generator
             exit();
         }
 
-        if ($_POST['charset'] == '' || !is_string($_POST['charset'])) {
-            AdminNotice::error(__('The charset is invalid.', 'license-manager-for-woocommerce'));
-            wp_redirect(admin_url(sprintf('admin.php?page=%s&action=add', AdminMenus::GENERATORS_PAGE)));
-            exit();
-        }
-
-        if ($_POST['chunks'] == '' || !is_numeric($_POST['chunks'])) {
-            AdminNotice::error(__('Only integer values allowed for chunks.', 'license-manager-for-woocommerce'));
-            wp_redirect(admin_url(sprintf('admin.php?page=%s&action=add', AdminMenus::GENERATORS_PAGE)));
-            exit();
-        }
-
-        if ($_POST['chunk_length'] == '' || !is_numeric($_POST['chunk_length'])) {
-            AdminNotice::error(__('Only integer values allowed for chunk length.', 'license-manager-for-woocommerce'));
-            wp_redirect(admin_url(sprintf('admin.php?page=%s&action=add', AdminMenus::GENERATORS_PAGE)));
-            exit();
-        }
+//        if ($_POST['charset'] == '' || !is_string($_POST['charset'])) {
+//            AdminNotice::error(__('The charset is invalid.', 'license-manager-for-woocommerce'));
+//            wp_redirect(admin_url(sprintf('admin.php?page=%s&action=add', AdminMenus::GENERATORS_PAGE)));
+//            exit();
+//        }
+//
+//        if ($_POST['chunks'] == '' || !is_numeric($_POST['chunks'])) {
+//            AdminNotice::error(__('Only integer values allowed for chunks.', 'license-manager-for-woocommerce'));
+//            wp_redirect(admin_url(sprintf('admin.php?page=%s&action=add', AdminMenus::GENERATORS_PAGE)));
+//            exit();
+//        }
+//
+//        if ($_POST['chunk_length'] == '' || !is_numeric($_POST['chunk_length'])) {
+//            AdminNotice::error(__('Only integer values allowed for chunk length.', 'license-manager-for-woocommerce'));
+//            wp_redirect(admin_url(sprintf('admin.php?page=%s&action=add', AdminMenus::GENERATORS_PAGE)));
+//            exit();
+//        }
 
         // Save the generator.
         $generator = GeneratorResourceRepository::instance()->insert(
             array(
                 'name'                => $_POST['name'],
-                'charset'             => $_POST['charset'],
-                'chunks'              => $_POST['chunks'],
-                'chunk_length'        => $_POST['chunk_length'],
+                'charset'             => "abcdABCD1234",// $_POST['charset'],
+                'chunks'              => 4,// $_POST['chunks'],
+                'chunk_length'        => 4,// $_POST['chunk_length'],
                 'times_activated_max' => $_POST['times_activated_max'],
-                'separator'           => $_POST['separator'],
+                'separator'           => "-", //$_POST['separator'],
                 'prefix'              => $_POST['prefix'],
                 'suffix'              => $_POST['suffix'],
                 'expires_in'          => $_POST['expires_in'],

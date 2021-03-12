@@ -256,13 +256,14 @@ class GeneratorsList extends WP_List_Table
         return array(
             'cb'                  => '<input type="checkbox" />',
             'name'                => __('Name', 'license-manager-for-woocommerce'),
-            'charset'             => __('Character map', 'license-manager-for-woocommerce'),
-            'chunks'              => __('Number of chunks', 'license-manager-for-woocommerce'),
-            'chunk_length'        => __('Chunk length', 'license-manager-for-woocommerce'),
+//            'charset'             => __('Character map', 'license-manager-for-woocommerce'),
+//            'chunks'              => __('Number of chunks', 'license-manager-for-woocommerce'),
+//            'chunk_length'        => __('Chunk length', 'license-manager-for-woocommerce'),
             'times_activated_max' => __('Maximum activation count', 'license-manager-for-woocommerce'),
-            'separator'           => __('Separator', 'license-manager-for-woocommerce'),
-            'prefix'              => __('Prefix', 'license-manager-for-woocommerce'),
-            'suffix'              => __('Suffix', 'license-manager-for-woocommerce'),
+            'users_number'        => __('Maximum number of users', 'license-manager-for-woocommerce'),
+//            'separator'           => __('Separator', 'license-manager-for-woocommerce'),
+//            'prefix'              => __('Prefix', 'license-manager-for-woocommerce'),
+//            'suffix'              => __('Suffix', 'license-manager-for-woocommerce'),
             'expires_in'          => __('Expires in', 'license-manager-for-woocommerce')
         );
     }

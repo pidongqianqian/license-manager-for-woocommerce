@@ -34,49 +34,49 @@
             </tr>
 
             <!-- CHARSET -->
-            <tr scope="row">
-                <th scope="row">
-                    <label for="charset"><?php esc_html_e('Character map', 'license-manager-for-woocommerce');?></label>
-                    <span class="text-danger">*</span></label>
-                </th>
-                <td>
-                    <input name="charset" id="charset" class="regular-text" type="text">
-                    <p class="description" id="tagline-description">
-                        <b><?php esc_html_e('Required.', 'license-manager-for-woocommerce');?></b>
-                        <span><?php _e('i.e. for "12-AB-34-CD" the character map is <kbd>ABCD1234</kbd>.', 'license-manager-for-woocommerce');?></span>
-                    </p>
-                </td>
-            </tr>
+<!--            <tr scope="row">-->
+<!--                <th scope="row">-->
+<!--                    <label for="charset">--><?php //esc_html_e('Character map', 'license-manager-for-woocommerce');?><!--</label>-->
+<!--                    <span class="text-danger">*</span></label>-->
+<!--                </th>-->
+<!--                <td>-->
+<!--                    <input name="charset" id="charset" class="regular-text" type="text">-->
+<!--                    <p class="description" id="tagline-description">-->
+<!--                        <b>--><?php //esc_html_e('Required.', 'license-manager-for-woocommerce');?><!--</b>-->
+<!--                        <span>--><?php //_e('i.e. for "12-AB-34-CD" the character map is <kbd>ABCD1234</kbd>.', 'license-manager-for-woocommerce');?><!--</span>-->
+<!--                    </p>-->
+<!--                </td>-->
+<!--            </tr>-->
 
             <!-- NUMBER OF CHUNKS -->
-            <tr scope="row">
-                <th scope="row">
-                    <label for="chunks"><?php esc_html_e('Number of chunks', 'license-manager-for-woocommerce');?></label>
-                    <span class="text-danger">*</span></label>
-                </th>
-                <td>
-                    <input name="chunks" id="chunks" class="regular-text" type="text">
-                    <p class="description" id="tagline-description">
-                        <b><?php esc_html_e('Required.', 'license-manager-for-woocommerce');?></b>
-                        <span><?php _e('i.e. for "12-AB-34-CD" the number of chunks is <kbd>4</kbd>.', 'license-manager-for-woocommerce');?></span>
-                    </p>
-                </td>
-            </tr>
+<!--            <tr scope="row">-->
+<!--                <th scope="row">-->
+<!--                    <label for="chunks">--><?php //esc_html_e('Number of chunks', 'license-manager-for-woocommerce');?><!--</label>-->
+<!--                    <span class="text-danger">*</span></label>-->
+<!--                </th>-->
+<!--                <td>-->
+<!--                    <input name="chunks" id="chunks" class="regular-text" type="text">-->
+<!--                    <p class="description" id="tagline-description">-->
+<!--                        <b>--><?php //esc_html_e('Required.', 'license-manager-for-woocommerce');?><!--</b>-->
+<!--                        <span>--><?php //_e('i.e. for "12-AB-34-CD" the number of chunks is <kbd>4</kbd>.', 'license-manager-for-woocommerce');?><!--</span>-->
+<!--                    </p>-->
+<!--                </td>-->
+<!--            </tr>-->
 
             <!-- CHUNK LENGTH -->
-            <tr scope="row">
-                <th scope="row">
-                    <label for="chunk_length"><?php esc_html_e('Chunk length', 'license-manager-for-woocommerce');?></label>
-                    <span class="text-danger">*</span></label>
-                </th>
-                <td>
-                    <input name="chunk_length" id="chunk_length" class="regular-text" type="text">
-                    <p class="description" id="tagline-description">
-                        <b><?php esc_html_e('Required.', 'license-manager-for-woocommerce');?></b>
-                        <span><?php _e('i.e. for "12-AB-34-CD" the chunk length is <kbd>2</kbd>.', 'license-manager-for-woocommerce');?></span>
-                    </p>
-                </td>
-            </tr>
+<!--            <tr scope="row">-->
+<!--                <th scope="row">-->
+<!--                    <label for="chunk_length">--><?php //esc_html_e('Chunk length', 'license-manager-for-woocommerce');?><!--</label>-->
+<!--                    <span class="text-danger">*</span></label>-->
+<!--                </th>-->
+<!--                <td>-->
+<!--                    <input name="chunk_length" id="chunk_length" class="regular-text" type="text">-->
+<!--                    <p class="description" id="tagline-description">-->
+<!--                        <b>--><?php //esc_html_e('Required.', 'license-manager-for-woocommerce');?><!--</b>-->
+<!--                        <span>--><?php //_e('i.e. for "12-AB-34-CD" the chunk length is <kbd>2</kbd>.', 'license-manager-for-woocommerce');?><!--</span>-->
+<!--                    </p>-->
+<!--                </td>-->
+<!--            </tr>-->
 
             <!-- USERS NUMBER -->
             <tr scope="row">
@@ -91,40 +91,40 @@
             </tr>
 
             <!-- SEPARATOR -->
-            <tr scope="row">
-                <th scope="row"><label for="separator"><?php esc_html_e('Separator', 'license-manager-for-woocommerce');?></label></th>
-                <td>
-                    <input name="separator" id="separator" class="regular-text" type="text">
-                    <p class="description" id="tagline-description">
-                        <b><?php esc_html_e('Optional.', 'license-manager-for-woocommerce');?></b>
-                        <span><?php _e('i.e. for "12-AB-34-CD" the separator is <kbd>-</kbd>.', 'license-manager-for-woocommerce');?></span>
-                    </p>
-                </td>
-            </tr>
+<!--            <tr scope="row">-->
+<!--                <th scope="row"><label for="separator">--><?php //esc_html_e('Separator', 'license-manager-for-woocommerce');?><!--</label></th>-->
+<!--                <td>-->
+<!--                    <input name="separator" id="separator" class="regular-text" type="text">-->
+<!--                    <p class="description" id="tagline-description">-->
+<!--                        <b>--><?php //esc_html_e('Optional.', 'license-manager-for-woocommerce');?><!--</b>-->
+<!--                        <span>--><?php //_e('i.e. for "12-AB-34-CD" the separator is <kbd>-</kbd>.', 'license-manager-for-woocommerce');?><!--</span>-->
+<!--                    </p>-->
+<!--                </td>-->
+<!--            </tr>-->
 
             <!-- PREFIX -->
-            <tr scope="row">
-                <th scope="row"><label for="prefix"><?php esc_html_e('Prefix', 'license-manager-for-woocommerce');?></label></th>
-                <td>
-                    <input name="prefix" id="prefix" class="regular-text" type="text">
-                    <p class="description" id="tagline-description">
-                        <b><?php esc_html_e('Optional.', 'license-manager-for-woocommerce');?></b>
-                        <span><?php _e('Adds a word at the start (separator <b>not</b> included), i.e. <kbd><b>PRE-</b>12-AB-34-CD</kbd>.', 'license-manager-for-woocommerce');?></span>
-                    </p>
-                </td>
-            </tr>
+<!--            <tr scope="row">-->
+<!--                <th scope="row"><label for="prefix">--><?php //esc_html_e('Prefix', 'license-manager-for-woocommerce');?><!--</label></th>-->
+<!--                <td>-->
+<!--                    <input name="prefix" id="prefix" class="regular-text" type="text">-->
+<!--                    <p class="description" id="tagline-description">-->
+<!--                        <b>--><?php //esc_html_e('Optional.', 'license-manager-for-woocommerce');?><!--</b>-->
+<!--                        <span>--><?php //_e('Adds a word at the start (separator <b>not</b> included), i.e. <kbd><b>PRE-</b>12-AB-34-CD</kbd>.', 'license-manager-for-woocommerce');?><!--</span>-->
+<!--                    </p>-->
+<!--                </td>-->
+<!--            </tr>-->
 
             <!-- SUFFIX -->
-            <tr scope="row">
-                <th scope="row"><label for="suffix"><?php esc_html_e('Suffix', 'license-manager-for-woocommerce');?></label></th>
-                <td>
-                    <input name="suffix" id="suffix" class="regular-text" type="text">
-                    <p class="description" id="tagline-description">
-                        <b><?php esc_html_e('Optional.', 'license-manager-for-woocommerce');?></b>
-                        <span><?php _e('Adds a word at the end (separator <b>not</b> included), i.e. <kbd>12-AB-34-CD<b>-SUF</b></kbd>.', 'license-manager-for-woocommerce');?></span>
-                    </p>
-                </td>
-            </tr>
+<!--            <tr scope="row">-->
+<!--                <th scope="row"><label for="suffix">--><?php //esc_html_e('Suffix', 'license-manager-for-woocommerce');?><!--</label></th>-->
+<!--                <td>-->
+<!--                    <input name="suffix" id="suffix" class="regular-text" type="text">-->
+<!--                    <p class="description" id="tagline-description">-->
+<!--                        <b>--><?php //esc_html_e('Optional.', 'license-manager-for-woocommerce');?><!--</b>-->
+<!--                        <span>--><?php //_e('Adds a word at the end (separator <b>not</b> included), i.e. <kbd>12-AB-34-CD<b>-SUF</b></kbd>.', 'license-manager-for-woocommerce');?><!--</span>-->
+<!--                    </p>-->
+<!--                </td>-->
+<!--            </tr>-->
 
             <!-- EXPIRES IN -->
             <tr scope="row">

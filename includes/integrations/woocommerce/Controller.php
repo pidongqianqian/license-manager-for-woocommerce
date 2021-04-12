@@ -202,6 +202,13 @@ class Controller extends AbstractIntegrationController implements IntegrationCon
             $expiresAt     = $gmtDate->add($dateExpiresAt)->format('Y-m-d H:i:s');
         }
 
+        // if order is renew order or upgrade order - only update the old license, not generate new license
+        // add new filter, and the add_filter function is in nodefy theme
+        $canContinue = apply_filters('lmfwc_nodefy_pre_insert_imported_license_keys', $cleanOrderId, $cleanProductId);
+        if ($canContinue === false){
+            return false;
+        }
+
         // Add the keys to the database table.
         foreach ($cleanLicenseKeys as $licenseKey) {
             // Key exists, up the invalid keys count.

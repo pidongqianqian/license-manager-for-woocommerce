@@ -8,6 +8,7 @@ use LicenseManagerForWooCommerce\Models\Resources\Generator as GeneratorResource
 use LicenseManagerForWooCommerce\Models\Resources\License as LicenseResourceModel;
 use LicenseManagerForWooCommerce\Repositories\Resources\Generator as GeneratorResourceRepository;
 use LicenseManagerForWooCommerce\Repositories\Resources\License as LicenseResourceRepository;
+use LicenseManagerForWooCommerce\Repositories\Resources\NodefyLicenseRelateOrders as NodefyLicenseRelateOrdersRepository;
 use LicenseManagerForWooCommerce\Settings;
 use WC_Order_Item_Product;
 use WC_Product_Simple;
@@ -331,6 +332,26 @@ class Order
                 'product_id' => $product->get_id()
             )
         );
+
+        // nodefy relate order, renew order or upgrade order
+        if (!$licenses){
+            $nodefy_relate_licenses = NodefyLicenseRelateOrdersRepository::instance()->findAllBy(
+                array(
+                    'order_id' => $item->get_order_id(),
+                )
+            );
+            $nodefy_relate_license_ids = [];
+            foreach ($nodefy_relate_licenses as $relate_license) {
+                array_push($nodefy_relate_license_ids, $relate_license->getLicenseId());
+            }
+            if (count($nodefy_relate_license_ids) > 0){
+                $licenses = LicenseResourceRepository::instance()->findAllBy(
+                    array(
+                        'id' => implode(',', $nodefy_relate_license_ids)
+                    )
+                );
+            }
+        }
 
         // No license keys? Nothing to do...
         if (!$licenses) {

@@ -101,6 +101,11 @@ class License extends AbstractResourceModel implements ModelInterface
     protected $info;
 
     /**
+     * @var string
+     */
+    protected $homeserver;
+
+    /**
      * License constructor.
      *
      * @param stdClass $license
@@ -425,5 +430,21 @@ class License extends AbstractResourceModel implements ModelInterface
     public function setInfo($info)
     {
         $this->info = $info;
+    }
+
+     /**
+     * @return string
+     */
+    public function getHomeserver()
+    {
+        return $this->homeserver;
+    }
+
+    /**
+     * @param string $homeserver
+     */
+    public function setHomeserver($homeserver)
+    {
+        $this->homeserver = $homeserver;
     }
 }

@@ -37,6 +37,11 @@ class Setup
     const NODEFY_OPERATION_LOG_TABLE_NAME = 'lmfwc_nodefy_operation_log';
 
     /**
+     * @var string
+     */
+    const NODEFY_LICENSE_RELATE_ORDERS_TABLE_NAME = 'lmfwc_nodefy_license_relate_orders';
+
+    /**
      * @var int
      */
     const DB_VERSION = 109;
@@ -78,6 +83,7 @@ class Setup
             $wpdb->prefix . self::API_KEYS_TABLE_NAME,
             $wpdb->prefix . self::LICENSE_META_TABLE_NAME,
             $wpdb->prefix . self::NODEFY_OPERATION_LOG_TABLE_NAME,
+            $wpdb->prefix . self::NODEFY_LICENSE_RELATE_ORDERS_TABLE_NAME,
         );
 
         foreach ($tables as $table) {
@@ -134,6 +140,7 @@ class Setup
         $table3 = $wpdb->prefix . self::API_KEYS_TABLE_NAME;
         $table4 = $wpdb->prefix . self::LICENSE_META_TABLE_NAME;
         $table5 = $wpdb->prefix . self::NODEFY_OPERATION_LOG_TABLE_NAME;
+        $table6 = $wpdb->prefix . self::NODEFY_LICENSE_RELATE_ORDERS_TABLE_NAME;
 
         dbDelta("
             CREATE TABLE IF NOT EXISTS $table1 (
@@ -158,6 +165,11 @@ class Setup
                 PRIMARY KEY (`id`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
         ");
+
+        $homeserver_row = $wpdb->get_results("SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = '".$table1."' AND column_name = 'homeserver'"  );
+        if(empty($homeserver_row)){
+            $wpdb->query("ALTER TABLE `".$table1."` ADD homeserver VARCHAR(255) AFTER info");
+        }
 
         dbDelta("
             CREATE TABLE IF NOT EXISTS $table2 (
@@ -226,6 +238,17 @@ class Setup
                 `info` TEXT NOT NULL DEFAULT '' COMMENT 'server info: mac, ip',
                 `note` LONGTEXT NULL,
                 `license_backup` LONGTEXT NULL,
+                `created_at` DATETIME NULL,
+                `created_by` BIGINT(20) UNSIGNED NULL DEFAULT NULL,
+                PRIMARY KEY (`id`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8
+        ");
+
+        dbDelta("
+            CREATE TABLE IF NOT EXISTS $table6 (
+                `id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+                `license_id` BIGINT(20) UNSIGNED NULL DEFAULT NULL,
+                `order_id` BIGINT(20) UNSIGNED NULL DEFAULT NULL,
                 `created_at` DATETIME NULL,
                 `created_by` BIGINT(20) UNSIGNED NULL DEFAULT NULL,
                 PRIMARY KEY (`id`)

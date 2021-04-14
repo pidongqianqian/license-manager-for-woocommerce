@@ -6,6 +6,7 @@ use LicenseManagerForWooCommerce\Enums\LicenseStatus;
 use LicenseManagerForWooCommerce\Lists\APIKeyList;
 use LicenseManagerForWooCommerce\Lists\GeneratorsList;
 use LicenseManagerForWooCommerce\Lists\LicensesList;
+use LicenseManagerForWooCommerce\Lists\NodefyOperationLogList;
 use LicenseManagerForWooCommerce\Models\Resources\ApiKey as ApiKeyResourceModel;
 use LicenseManagerForWooCommerce\Models\Resources\License as LicenseResourceModel;
 use LicenseManagerForWooCommerce\Repositories\Resources\ApiKey as ApiKeyResourceRepository;
@@ -36,6 +37,11 @@ class AdminMenus
     const GENERATORS_PAGE = 'lmfwc_generators';
 
     /**
+     * Generators page slug.
+     */
+    const NODEFY_OPERATION_LOG_PAGE = 'lmfwc_nodefy_operation_log';
+
+    /**
      * Settings page slug.
      */
     const SETTINGS_PAGE = 'lmfwc_settings';
@@ -49,6 +55,11 @@ class AdminMenus
      * @var GeneratorsList
      */
     private $generators;
+
+    /**
+     * @var NodefyOperationLogList
+     */
+    private $nodefyOperationLogs;
 
     /**
      * Class constructor.
@@ -118,6 +129,17 @@ class AdminMenus
         );
         add_action('load-' . $generatorsHook, array($this, 'generatorsPageScreenOptions'));
 
+        // Nodefy Operation Log List Page
+        $nodefyOperationLogsHook = add_submenu_page(
+            self::LICENSES_PAGE,
+            __('License Manager - Operation Log', 'license-manager-for-woocommerce'),
+            __('Operation Logs', 'license-manager-for-woocommerce'),
+            'manage_options',
+            self::NODEFY_OPERATION_LOG_PAGE,
+            array($this, 'nodefyOperationLogsPage')
+        );
+        add_action('load-' . $nodefyOperationLogsHook, array($this, 'nodefyOperationLogListScreenOptions'));
+
         // Settings Page
         add_submenu_page(
             self::LICENSES_PAGE,
@@ -161,6 +183,23 @@ class AdminMenus
         add_screen_option($option, $args);
 
         $this->generators = new GeneratorsList;
+    }
+
+     /**
+     * Adds the supported screen options for the generators list.
+     */
+    public function nodefyOperationLogListScreenOptions()
+    {
+        $option = 'per_page';
+        $args = array(
+            'label'   => __('Operation log per page', 'license-manager-for-woocommerce'),
+            'default' => 10,
+            'option'  => 'nodefy_operation_log_per_page'
+        );
+
+        add_screen_option($option, $args);
+
+        $this->nodefyOperationLogs = new NodefyOperationLogList;
     }
 
     /**
@@ -275,6 +314,62 @@ class AdminMenus
         }
 
         include LMFWC_TEMPLATES_DIR . 'page-generators.php';
+    }
+
+    /**
+     * Sets up the nodefy operation log page.
+     */
+    public function nodefyOperationLogsPage()
+    {
+        $nodefyOperationLogs = $this->nodefyOperationLogs;
+        $action     = $this->getCurrentAction($default = 'list');
+
+        // List generators
+        // if ($action === 'list' || $action === 'delete') {
+        //     $addGeneratorUrl = wp_nonce_url(
+        //         sprintf(
+        //             admin_url('admin.php?page=%s&action=add'),
+        //             self::NODEFY_OPERATION_LOG_PAGE
+        //         ),
+        //         'lmfwc_add_nodefy_operation_log'
+        //     );
+        //     $generateKeysUrl = wp_nonce_url(
+        //         sprintf(
+        //             admin_url('admin.php?page=%s&action=generate'),
+        //             self::NODEFY_OPERATION_LOG_PAGE
+        //         ),
+        //         'lmfwc_generate_keys'
+        //     );
+        // }
+
+        // // Edit generators
+        // if ($action === 'edit') {
+        //     if (!current_user_can('manage_options')) {
+        //         wp_die(__('Insufficient permission', 'license-manager-for-woocommerce'));
+        //     }
+
+        //     if (!array_key_exists('edit', $_GET) && !array_key_exists('id', $_GET)) {
+        //         return;
+        //     }
+
+        //     if (!$generator = GeneratorResourceRepository::instance()->find($_GET['id'])) {
+        //         return;
+        //     }
+
+        //     $products = apply_filters('lmfwc_get_assigned_products', $_GET['id']);
+        // }
+
+        // // Generate license keys
+        // if ($action === 'generate') {
+        //     $generatorsDropdown = GeneratorResourceRepository::instance()->findAll();
+        //     $statusOptions      = LicenseStatus::dropdown();
+
+        //     if (!$generatorsDropdown) {
+        //         $generatorsDropdown = array();
+        //     }
+        // }
+
+        include LMFWC_TEMPLATES_DIR . 'page-nodefy-operation-logs.php';
     }
 
     /**

@@ -32,6 +32,11 @@ class Setup
     const LICENSE_META_TABLE_NAME = 'lmfwc_licenses_meta';
 
     /**
+     * @var string
+     */
+    const NODEFY_OPERATION_LOG_TABLE_NAME = 'lmfwc_nodefy_operation_log';
+
+    /**
      * @var int
      */
     const DB_VERSION = 109;
@@ -71,7 +76,8 @@ class Setup
             $wpdb->prefix . self::LICENSES_TABLE_NAME,
             $wpdb->prefix . self::GENERATORS_TABLE_NAME,
             $wpdb->prefix . self::API_KEYS_TABLE_NAME,
-            $wpdb->prefix . self::LICENSE_META_TABLE_NAME
+            $wpdb->prefix . self::LICENSE_META_TABLE_NAME,
+            $wpdb->prefix . self::NODEFY_OPERATION_LOG_TABLE_NAME,
         );
 
         foreach ($tables as $table) {
@@ -127,6 +133,7 @@ class Setup
         $table2 = $wpdb->prefix . self::GENERATORS_TABLE_NAME;
         $table3 = $wpdb->prefix . self::API_KEYS_TABLE_NAME;
         $table4 = $wpdb->prefix . self::LICENSE_META_TABLE_NAME;
+        $table5 = $wpdb->prefix . self::NODEFY_OPERATION_LOG_TABLE_NAME;
 
         dbDelta("
             CREATE TABLE IF NOT EXISTS $table1 (
@@ -205,6 +212,23 @@ class Setup
                 `updated_at` DATETIME NULL DEFAULT NULL,
                 `updated_by` BIGINT(20) UNSIGNED NULL DEFAULT NULL,
                 PRIMARY KEY (`meta_id`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8
+        ");
+
+        dbDelta("
+            CREATE TABLE IF NOT EXISTS $table5 (
+                `id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+                `license_id` BIGINT(20) UNSIGNED NULL DEFAULT NULL,
+                `order_id` BIGINT(20) UNSIGNED NULL DEFAULT NULL,
+                `product_id` BIGINT(20) UNSIGNED NULL DEFAULT NULL,
+                `user_id` BIGINT(20) UNSIGNED NULL DEFAULT NULL,
+                `operation` VARCHAR(255) NULL,
+                `info` TEXT NOT NULL DEFAULT '' COMMENT 'server info: mac, ip',
+                `note` LONGTEXT NULL,
+                `license_backup` LONGTEXT NULL,
+                `created_at` DATETIME NULL,
+                `created_by` BIGINT(20) UNSIGNED NULL DEFAULT NULL,
+                PRIMARY KEY (`id`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8
         ");
     }

@@ -252,6 +252,7 @@ class Controller extends AbstractIntegrationController implements IntegrationCon
                     'hash'                => $hashedLicenseKey,
                     'expires_at'          => $expiresAt,
                     'valid_for'           => $generator->getExpiresIn(),
+                    'users_number'        => $generator->getUsersNumber(),
                     'source'              => LicenseSource::GENERATOR,
                     'status'              => $cleanStatus,
                     'times_activated_max' => $generator->getTimesActivatedMax()

@@ -79,6 +79,16 @@ defined('ABSPATH') || exit;
             </td>
         </tr>
 
+
+        <tr scope="row">
+            <th scope="row"><label><?php esc_html_e('Activated count', 'license-manager-for-woocommerce');?></label></th>
+            <td>
+                <div style="word-break: break-all">
+                    <?php echo esc_html($license->getTimesActivated()); ?>
+                </div>
+            </td>
+        </tr>
+
         <!-- STATUS -->
         <tr scope="row">
             <th scope="row"><label for="edit__status"><?php esc_html_e('Status', 'license-manager-for-woocommerce');?></label></th>

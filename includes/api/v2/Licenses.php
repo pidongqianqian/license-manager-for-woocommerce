@@ -621,6 +621,11 @@ class Licenses extends LMFWC_REST_Controller
         }
 
         $licenseKey = sanitize_text_field($request->get_param('license_key'));
+        $homeserver = sanitize_text_field($_GET['homeserver']);
+        $url = parse_url($homeserver);
+        if (count($url) > 0 && isset($url['host'])){
+            $homeserver = $url['host'];
+        }
 
         if (!$licenseKey) {
             return new WP_Error(
@@ -718,6 +723,7 @@ class Licenses extends LMFWC_REST_Controller
                     'times_activated' => $timesActivatedNew,
                     'info' => serialize(['mac'=> $mac, 'ip'=> $ip])
                 );
+                if ($homeserver) $update['homeserver'] = $homeserver;
             }
 
             /** @var LicenseResourceModel $updatedLicense */

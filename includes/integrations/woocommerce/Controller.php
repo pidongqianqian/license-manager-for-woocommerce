@@ -243,7 +243,7 @@ class Controller extends AbstractIntegrationController implements IntegrationCon
             $hashedLicenseKey    = apply_filters('lmfwc_hash', $licenseKey);
 
             // Save to database.
-            LicenseResourceRepository::instance()->insert(
+            $license = LicenseResourceRepository::instance()->insert(
                 array(
                     'order_id'            => $cleanOrderId,
                     'product_id'          => $cleanProductId,
@@ -257,6 +257,8 @@ class Controller extends AbstractIntegrationController implements IntegrationCon
                     'times_activated_max' => $generator->getTimesActivatedMax()
                 )
             );
+
+            apply_filters('lmfwc_nodefy_after_insert_imported_license_keys', $license);
         }
 
         // There have been duplicate keys, regenerate and add them.

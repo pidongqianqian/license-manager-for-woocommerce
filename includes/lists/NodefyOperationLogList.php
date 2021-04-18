@@ -532,7 +532,7 @@ class NodefyOperationLogList extends WP_List_Table
             'product_id'  => __('Product', 'license-manager-for-woocommerce'),
             'user_id'     => __('Customer', 'license-manager-for-woocommerce'),
             'operation'   => __('Operation', 'license-manager-for-woocommerce'),
-            'info'        => __('Info', 'license-manager-for-woocommerce'),
+            'note'        => __('Note', 'license-manager-for-woocommerce'),
             'created'     => __('Created', 'license-manager-for-woocommerce'),
         );
 

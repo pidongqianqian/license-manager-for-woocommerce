@@ -34,6 +34,15 @@ defined('ABSPATH') || exit;
             </td>
         </tr>
 
+        <tr scope="row">
+            <th scope="row"><label for="edit__license_key"><?php esc_html_e('Encrypted License key', 'license-manager-for-woocommerce');?></label></th>
+            <td>
+                <div style="word-break: break-all">
+                    <?php echo esc_html($license->getLicenseKey()); ?>
+                </div>
+            </td>
+        </tr>
+
         <!-- VALID FOR -->
         <tr scope="row">
             <th scope="row"><label for="edit__valid_for"><?php esc_html_e('Valid for (days)', 'license-manager-for-woocommerce');?></label></th>

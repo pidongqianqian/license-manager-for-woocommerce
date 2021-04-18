@@ -130,6 +130,7 @@ class License extends AbstractResourceModel implements ModelInterface
         $this->timesActivatedMax = $license->times_activated_max === null ? null : intval($license->times_activated_max);
         $this->usersNumber       = $license->users_number        === null ? null : intval($license->users_number);
         $this->info              = $license->info;
+        $this->homeserver        = $license->homeserver;
         $this->createdAt         = $license->created_at;
         $this->createdBy         = $license->created_by === null ? null : intval($license->created_by);
         $this->updatedAt         = $license->updated_at;

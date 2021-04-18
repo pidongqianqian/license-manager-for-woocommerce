@@ -232,6 +232,7 @@ class Licenses extends LMFWC_REST_Controller
             // Remove the hash, decrypt the license key, and add it to the response
             unset($licenseData['hash']);
             $licenseData['licenseKey'] = $license->getDecryptedLicenseKey();
+            $licenseData['encryptedLicenseKey'] = $license->getLicenseKey();
             $response[] = $licenseData;
         }
 
@@ -278,6 +279,13 @@ class Licenses extends LMFWC_REST_Controller
                     'hash' => apply_filters('lmfwc_hash', $licenseKey)
                 )
             );
+            if (!$license){
+                $license = LicenseResourceRepository::instance()->findBy(
+                    array(
+                        'license_key' => $licenseKey
+                    )
+                );
+            }
         } catch (Exception $e) {
             return new WP_Error(
                 'lmfwc_rest_data_error',
@@ -290,7 +298,7 @@ class Licenses extends LMFWC_REST_Controller
             return new WP_Error(
                 'lmfwc_rest_data_error',
                 sprintf(
-                    'License Key: %s could not be found.',
+                    'License Key: %s could not be found.11',
                     $licenseKey
                 ),
                 array('status' => 404)
@@ -302,6 +310,7 @@ class Licenses extends LMFWC_REST_Controller
         // Remove the hash and decrypt the license key
         unset($licenseData['hash']);
         $licenseData['licenseKey'] = $license->getDecryptedLicenseKey();
+        $licenseData['encryptedLicenseKey'] = $license->getLicenseKey();
 
         return $this->response(true, $licenseData, 200, 'v2/licenses/{license_key}');
     }
@@ -427,6 +436,7 @@ class Licenses extends LMFWC_REST_Controller
         // Remove the hash and decrypt the license key
         unset($licenseData['hash']);
         $licenseData['licenseKey'] = $license->getDecryptedLicenseKey();
+        $licenseData['encryptedLicenseKey'] = $license->getLicenseKey();
 
         return $this->response(true, $licenseData, 200, 'v2/licenses');
     }
@@ -495,6 +505,14 @@ class Licenses extends LMFWC_REST_Controller
             )
         );
 
+        if (!$license){
+            $license = LicenseResourceRepository::instance()->findBy(
+                array(
+                    'license_key' => $licenseKey
+                )
+            );
+        }
+
         if (!$license) {
             return new WP_Error(
                 'lmfwc_rest_data_error',
@@ -541,6 +559,13 @@ class Licenses extends LMFWC_REST_Controller
             $updateData['valid_for'] = null;
         }
 
+        if (array_key_exists('homeserver', $updateData)) {
+            $url = parse_url($updateData['homeserver']);
+            if (count($url) > 0){
+                $updateData['homeserver'] = $url['host'] ? $url['host'] : $url;
+            }
+        }
+
         // Update the stock
         if ($license->getProductId() !== null && $license->getStatus() === LicenseStatus::ACTIVE) {
             apply_filters('lmfwc_stock_decrease', $license->getProductId());
@@ -567,6 +592,7 @@ class Licenses extends LMFWC_REST_Controller
         // Remove the hash and decrypt the license key
         unset($licenseData['hash']);
         $licenseData['licenseKey'] = $updatedLicense->getDecryptedLicenseKey();
+        $licenseData['encryptedLicenseKey'] = $license->getLicenseKey();
 
         return $this->response(true, $licenseData, 200, 'v2/licenses/{license_key}');
     }
@@ -615,6 +641,13 @@ class Licenses extends LMFWC_REST_Controller
                     'hash' => apply_filters('lmfwc_hash', $licenseKey)
                 )
             );
+            if (!$license){
+                $license = LicenseResourceRepository::instance()->findBy(
+                    array(
+                        'license_key' => $licenseKey
+                    )
+                );
+            }
         } catch (Exception $e) {
             return new WP_Error(
                 'lmfwc_rest_data_error',
@@ -705,6 +738,7 @@ class Licenses extends LMFWC_REST_Controller
         // Remove the hash and decrypt the license key
         unset($licenseData['hash']);
         $licenseData['licenseKey'] = $updatedLicense->getDecryptedLicenseKey();
+        $licenseData['encryptedLicenseKey'] = $license->getLicenseKey();
 
         return $this->response(true, $licenseData, 200, 'v2/licenses/activate/{license_key}');
     }
@@ -749,6 +783,13 @@ class Licenses extends LMFWC_REST_Controller
                     'hash' => apply_filters('lmfwc_hash', $licenseKey)
                 )
             );
+            if (!$license) {
+                $license = LicenseResourceRepository::instance()->findBy(
+                    array(
+                        'license_key' => $licenseKey
+                    )
+                );
+            }
         } catch (Exception $e) {
             return new WP_Error(
                 'lmfwc_rest_data_error',
@@ -813,6 +854,7 @@ class Licenses extends LMFWC_REST_Controller
         // Remove the hash and decrypt the license key
         unset($licenseData['hash']);
         $licenseData['licenseKey'] = $updatedLicense->getDecryptedLicenseKey();
+        $licenseData['encryptedLicenseKey'] = $license->getLicenseKey();
 
         return $this->response(true, $licenseData, 200, 'v2/licenses/deactivate/{license_key}');
     }
@@ -873,6 +915,13 @@ class Licenses extends LMFWC_REST_Controller
                     'hash' => apply_filters('lmfwc_hash', $licenseKey)
                 )
             );
+            if (!$license){
+                $license = LicenseResourceRepository::instance()->findBy(
+                    array(
+                        'license_key' => $licenseKey
+                    )
+                );
+            }
         } catch (Exception $e) {
             return new WP_Error(
                 'lmfwc_rest_data_error',

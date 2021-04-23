@@ -171,6 +171,11 @@ class Setup
             $wpdb->query("ALTER TABLE `".$table1."` ADD homeserver VARCHAR(255) AFTER info");
         }
 
+        $product_info_row = $wpdb->get_results("SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = '".$table1."' AND column_name = 'product_info'"  );
+        if(empty($product_info_row)){
+            $wpdb->query("ALTER TABLE `".$table1."` ADD product_info TEXT AFTER info");
+        }
+
         dbDelta("
             CREATE TABLE IF NOT EXISTS $table2 (
                 `id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,

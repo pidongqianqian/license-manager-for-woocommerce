@@ -242,6 +242,8 @@ class Controller extends AbstractIntegrationController implements IntegrationCon
             $encryptedLicenseKey = apply_filters('lmfwc_encrypt', $licenseKey);
             $hashedLicenseKey    = apply_filters('lmfwc_hash', $licenseKey);
 
+            $product = wc_get_product($cleanProductId);
+
             // Save to database.
             $license = LicenseResourceRepository::instance()->insert(
                 array(
@@ -255,7 +257,11 @@ class Controller extends AbstractIntegrationController implements IntegrationCon
                     'users_number'        => $generator->getUsersNumber(),
                     'source'              => LicenseSource::GENERATOR,
                     'status'              => $cleanStatus,
-                    'times_activated_max' => $generator->getTimesActivatedMax()
+                    'times_activated_max' => $generator->getTimesActivatedMax(),
+                    'product_info'        => json_encode([
+                        'name' => $product->get_name(),
+                        'price' => $product->get_price()
+                    ])
                 )
             );
 

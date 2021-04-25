@@ -709,11 +709,12 @@ class Licenses extends LMFWC_REST_Controller
             );
         }
         // nodefy - free trial check, if the homeserver has key before, can not use free trial
+        $free_trial_str = '{"name":"Free","price":"0"}';
         $key = LicenseResourceRepository::instance()->findAllBy(array(
             'homeserver' => $homeserver,
-            'product_info' => '{"name":"Free","price":"0"}'
+            'product_info' => $free_trial_str
         ));
-        if (count($key) > 0) {
+        if (count($key) > 0 && $license->getProductInfo() === $free_trial_str) {
             return new WP_Error(
                 'lmfwc_rest_data_error',
                 'This homeserver has try free trial before',

@@ -36,7 +36,7 @@ defined('ABSPATH') || exit; ?>
                 ?>
                     <tr>
                         <td class="td" style="text-align: left; vertical-align: middle; font-family: 'Helvetica Neue', Helvetica, Roboto, Arial, sans-serif;" colspan="<?php echo ($license->getExpiresAt()) ? '1' : '2'; ?>">
-                            <code><?php echo esc_html($license->getDecryptedLicenseKey()); ?></code>
+                            <code><?php echo esc_html(substr($license->getDecryptedLicenseKey(), -13)); ?></code>
                         </td>
 
                         <?php if ($license->getExpiresAt()): ?>

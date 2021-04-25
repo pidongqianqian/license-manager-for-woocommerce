@@ -699,6 +699,27 @@ class Licenses extends LMFWC_REST_Controller
                 array('status' => 404)
             );
         }
+
+        // nodefy - license key can only active once
+        if ($timesActivatedMax && ($timesActivated >= $timesActivatedMax)) {
+            return new WP_Error(
+                'lmfwc_rest_data_error',
+                'The license key has activated before',
+                array('status' => 405)
+            );
+        }
+        // nodefy - free trial check, if the homeserver has key before, can not use free trial
+        $key = LicenseResourceRepository::instance()->findAllBy(array(
+            'homeserver' => $homeserver,
+            'product_info' => '{"name":"Free","price":"0"}'
+        ));
+        if (count($key) > 0) {
+            return new WP_Error(
+                'lmfwc_rest_data_error',
+                'This homeserver has try free trial before',
+                array('status' => 405)
+            );
+        }
         
         // Activate the license key
         try {

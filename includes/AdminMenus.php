@@ -7,6 +7,7 @@ use LicenseManagerForWooCommerce\Lists\APIKeyList;
 use LicenseManagerForWooCommerce\Lists\GeneratorsList;
 use LicenseManagerForWooCommerce\Lists\LicensesList;
 use LicenseManagerForWooCommerce\Lists\NodefyOperationLogList;
+use LicenseManagerForWooCommerce\Lists\NodefyApiLogList;
 use LicenseManagerForWooCommerce\Models\Resources\ApiKey as ApiKeyResourceModel;
 use LicenseManagerForWooCommerce\Models\Resources\License as LicenseResourceModel;
 use LicenseManagerForWooCommerce\Repositories\Resources\ApiKey as ApiKeyResourceRepository;
@@ -42,6 +43,11 @@ class AdminMenus
     const NODEFY_OPERATION_LOG_PAGE = 'lmfwc_nodefy_operation_log';
 
     /**
+     * Generators page slug.
+     */
+    const NODEFY_API_LOG_PAGE = 'lmfwc_nodefy_api_log';
+
+    /**
      * Settings page slug.
      */
     const SETTINGS_PAGE = 'lmfwc_settings';
@@ -60,6 +66,11 @@ class AdminMenus
      * @var NodefyOperationLogList
      */
     private $nodefyOperationLogs;
+
+    /**
+     * @var nodefyApiLogList
+     */
+    private $nodefyApiLogs;
 
     /**
      * Class constructor.
@@ -140,6 +151,17 @@ class AdminMenus
         );
         add_action('load-' . $nodefyOperationLogsHook, array($this, 'nodefyOperationLogListScreenOptions'));
 
+        // Nodefy Api Log List Page
+        $nodefyApiLogsHook = add_submenu_page(
+            self::LICENSES_PAGE,
+            __('License Manager - Api Log', 'license-manager-for-woocommerce'),
+            __('Api Logs', 'license-manager-for-woocommerce'),
+            'manage_options',
+            self::NODEFY_API_LOG_PAGE,
+            array($this, 'nodefyApiLogsPage')
+        );
+        add_action('load-' . $nodefyApiLogsHook, array($this, 'nodefyApiLogListScreenOptions'));
+
         // Settings Page
         add_submenu_page(
             self::LICENSES_PAGE,
@@ -186,7 +208,7 @@ class AdminMenus
     }
 
      /**
-     * Adds the supported screen options for the generators list.
+     * Adds the supported screen options for the operation log list.
      */
     public function nodefyOperationLogListScreenOptions()
     {
@@ -200,6 +222,23 @@ class AdminMenus
         add_screen_option($option, $args);
 
         $this->nodefyOperationLogs = new NodefyOperationLogList;
+    }
+
+    /**
+     * Adds the supported screen options for the api log list.
+     */
+    public function nodefyApiLogListScreenOptions()
+    {
+        $option = 'per_page';
+        $args = array(
+            'label'   => __('Api log per page', 'license-manager-for-woocommerce'),
+            'default' => 10,
+            'option'  => 'nodefy_api_log_per_page'
+        );
+
+        add_screen_option($option, $args);
+
+        $this->nodefyApiLogs = new NodefyApiLogList;
     }
 
     /**
@@ -370,6 +409,17 @@ class AdminMenus
         // }
 
         include LMFWC_TEMPLATES_DIR . 'page-nodefy-operation-logs.php';
+    }
+
+     /**
+     * Sets up the nodefy api log page.
+     */
+    public function nodefyApiLogsPage()
+    {
+        $nodefyApiLogs = $this->nodefyApiLogs;
+        $action     = $this->getCurrentAction($default = 'list');
+
+        include LMFWC_TEMPLATES_DIR . 'page-nodefy-api-logs.php';
     }
 
     /**

@@ -42,6 +42,11 @@ class Setup
     const NODEFY_LICENSE_RELATE_ORDERS_TABLE_NAME = 'lmfwc_nodefy_license_relate_orders';
 
     /**
+     * @var string
+     */
+    const NODEFY_API_LOG_TABLE_NAME = 'lmfwc_nodefy_api_log';
+
+    /**
      * @var int
      */
     const DB_VERSION = 109;
@@ -141,6 +146,7 @@ class Setup
         $table4 = $wpdb->prefix . self::LICENSE_META_TABLE_NAME;
         $table5 = $wpdb->prefix . self::NODEFY_OPERATION_LOG_TABLE_NAME;
         $table6 = $wpdb->prefix . self::NODEFY_LICENSE_RELATE_ORDERS_TABLE_NAME;
+        $table7 = $wpdb->prefix . self::NODEFY_API_LOG_TABLE_NAME;
 
         dbDelta("
             CREATE TABLE IF NOT EXISTS $table1 (
@@ -254,6 +260,20 @@ class Setup
                 `id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
                 `license_id` BIGINT(20) UNSIGNED NULL DEFAULT NULL,
                 `order_id` BIGINT(20) UNSIGNED NULL DEFAULT NULL,
+                `created_at` DATETIME NULL,
+                `created_by` BIGINT(20) UNSIGNED NULL DEFAULT NULL,
+                PRIMARY KEY (`id`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8
+        ");
+
+        dbDelta("
+            CREATE TABLE IF NOT EXISTS $table7 (
+                `id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+                `name` VARCHAR(255) NULL,
+                `uri` LONGTEXT NULL,
+                `type` VARCHAR(255) NULL,
+                `request` LONGTEXT NULL,
+                `response` LONGTEXT NULL,
                 `created_at` DATETIME NULL,
                 `created_by` BIGINT(20) UNSIGNED NULL DEFAULT NULL,
                 PRIMARY KEY (`id`)

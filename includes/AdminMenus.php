@@ -140,6 +140,15 @@ class AdminMenus
         );
         add_action('load-' . $nodefyOperationLogsHook, array($this, 'nodefyOperationLogListScreenOptions'));
 
+        add_submenu_page(
+            self::LICENSES_PAGE,
+            __( 'License Manager - Logs', 'license-manager-for-woocommerce' ),
+            __( 'REST API Logs', 'license-manager-for-woocommerce' ),
+            'manage_options',
+            'lmfwc_nodefy_api_log',
+            array($this, 'nodefyShowRestApiLogPage')
+        );
+
         // Settings Page
         add_submenu_page(
             self::LICENSES_PAGE,
@@ -370,6 +379,10 @@ class AdminMenus
         // }
 
         include LMFWC_TEMPLATES_DIR . 'page-nodefy-operation-logs.php';
+    }
+
+    public function nodefyShowRestApiLogPage() {
+        wp_redirect('/wp-admin/edit.php?post_type=wp-rest-api-log');
     }
 
     /**

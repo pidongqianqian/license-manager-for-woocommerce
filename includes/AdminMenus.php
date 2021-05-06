@@ -12,6 +12,8 @@ use LicenseManagerForWooCommerce\Models\Resources\License as LicenseResourceMode
 use LicenseManagerForWooCommerce\Repositories\Resources\ApiKey as ApiKeyResourceRepository;
 use LicenseManagerForWooCommerce\Repositories\Resources\Generator as GeneratorResourceRepository;
 use LicenseManagerForWooCommerce\Repositories\Resources\License as LicenseResourceRepository;
+use LicenseManagerForWooCommerce\Repositories\Resources\NodefyOperationLog as NodefyOperationLogRepository;
+
 
 defined('ABSPATH') || exit;
 
@@ -334,50 +336,26 @@ class AdminMenus
         $nodefyOperationLogs = $this->nodefyOperationLogs;
         $action     = $this->getCurrentAction($default = 'list');
 
-        // List generators
-        // if ($action === 'list' || $action === 'delete') {
-        //     $addGeneratorUrl = wp_nonce_url(
-        //         sprintf(
-        //             admin_url('admin.php?page=%s&action=add'),
-        //             self::NODEFY_OPERATION_LOG_PAGE
-        //         ),
-        //         'lmfwc_add_nodefy_operation_log'
-        //     );
-        //     $generateKeysUrl = wp_nonce_url(
-        //         sprintf(
-        //             admin_url('admin.php?page=%s&action=generate'),
-        //             self::NODEFY_OPERATION_LOG_PAGE
-        //         ),
-        //         'lmfwc_generate_keys'
-        //     );
-        // }
+        // view logs
+        if ($action === 'view') {
+            if (!current_user_can('manage_options')) {
+                wp_die(__('Insufficient permission', 'license-manager-for-woocommerce'));
+            }
 
-        // // Edit generators
-        // if ($action === 'edit') {
-        //     if (!current_user_can('manage_options')) {
-        //         wp_die(__('Insufficient permission', 'license-manager-for-woocommerce'));
-        //     }
+            if (!array_key_exists('view', $_GET) && !array_key_exists('id', $_GET)) {
+                return;
+            }
 
-        //     if (!array_key_exists('edit', $_GET) && !array_key_exists('id', $_GET)) {
-        //         return;
-        //     }
+            $log = NodefyOperationLogRepository::instance()->find($_GET['id']);
+            if (!$log) {
+                return;
+            }
 
-        //     if (!$generator = GeneratorResourceRepository::instance()->find($_GET['id'])) {
-        //         return;
-        //     }
+            $license = LicenseResourceRepository::instance()->find(absint($log->getLicenseId()));
+            $product = wc_get_product($log->getProductId());
+            $user = get_userdata($log->getUserId());
+        }
 
-        //     $products = apply_filters('lmfwc_get_assigned_products', $_GET['id']);
-        // }
-
-        // // Generate license keys
-        // if ($action === 'generate') {
-        //     $generatorsDropdown = GeneratorResourceRepository::instance()->findAll();
-        //     $statusOptions      = LicenseStatus::dropdown();
-
-        //     if (!$generatorsDropdown) {
-        //         $generatorsDropdown = array();
-        //     }
-        // }
 
         include LMFWC_TEMPLATES_DIR . 'page-nodefy-operation-logs.php';
     }

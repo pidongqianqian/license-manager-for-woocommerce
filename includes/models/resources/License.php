@@ -229,6 +229,15 @@ class License extends AbstractResourceModel implements ModelInterface
     /**
      * @return string
      */
+    public function getShortDecryptedLicenseKey()
+    {
+        return '...'.substr(apply_filters('lmfwc_decrypt', $this->licenseKey), -13);
+    }
+
+
+    /**
+     * @return string
+     */
     public function getHash()
     {
         return $this->hash;

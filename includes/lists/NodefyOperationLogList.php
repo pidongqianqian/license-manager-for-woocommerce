@@ -127,10 +127,10 @@ class NodefyOperationLogList extends WP_List_Table
         <label for="filter-by-license-id" class="screen-reader-text">
             <span><?php _e('Filter by license', 'license-manager-for-woocommerce'); ?></span>
         </label>
-        <select name="order-id" id="filter-by-license-id">
+        <select name="license-id" id="filter-by-license-id">
             <?php if ($license): ?>
                 <option selected="selected" value="<?php echo esc_attr($license->getID()); ?>">
-                    <?php echo esc_html(substr($license->getDecryptedLicenseKey(), -13));?>
+                    <?php echo esc_html($license->getShortDecryptedLicenseKey());?>
                 </option>
             <?php endif; ?>
         </select>
@@ -243,19 +243,19 @@ class NodefyOperationLogList extends WP_List_Table
         // $actions['id'] = sprintf(__('ID: %d', 'license-manager-for-woocommerce'), intval($item['id']));
 
         // Edit
-        $actions['edit'] = sprintf(
+        $actions['view'] = sprintf(
             '<a href="%s">%s</a>',
             admin_url(
                 wp_nonce_url(
                     sprintf(
-                        'admin.php?page=%s&action=edit&id=%d',
+                        'admin.php?page=%s&action=view&id=%d',
                         AdminMenus::NODEFY_OPERATION_LOG_PAGE,
                         intval($item['id'])
                     ),
-                    'lmfwc_edit_nodefy_operation_log'
+                    'lmfwc_view_nodefy_operation_log'
                 )
             ),
-            __('Edit', 'license-manager-for-woocommerce')
+            __('View', 'license-manager-for-woocommerce')
         );
 
         // Delete
@@ -287,7 +287,7 @@ class NodefyOperationLogList extends WP_List_Table
         $license = LicenseResourceRepository::instance()->findBy(array(
             'id' => $item['license_id']
         ));
-        $key = $license ? '...'.esc_html(substr($license->getDecryptedLicenseKey(), -13)) : 'deleted';
+        $key = $license ? esc_html($license->getShortDecryptedLicenseKey()) : 'deleted';
         $html = sprintf(
             '<a href="%s" target="_blank">#%s</a>',
             '/wp-admin/admin.php?page=lmfwc_licenses&action=edit&id='.$item['license_id'],

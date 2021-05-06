@@ -522,6 +522,29 @@ class Controller extends AbstractIntegrationController implements IntegrationCon
                     );
                 }
             }
+
+            // search for a license
+            elseif ($type === 'license') {
+
+                $license = LicenseResourceRepository::instance()->find(array(
+                    'id' => esc_attr($term),
+                ));
+
+                // license exists.
+                if ($license) {
+                    $text = sprintf(
+                        /* translators: $1: license id, $2: license key, */
+                        '#%1$s %2$s',
+                        $license->getId(),
+                        $license->getShortDecryptedLicenseKey()
+                    );
+
+                    $results[] = array(
+                        'id' => $license->getId(),
+                        'text' => $text
+                    );
+                }
+            }
         }
 
         if (empty($ids)) {

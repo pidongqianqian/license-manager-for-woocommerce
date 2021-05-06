@@ -6,8 +6,8 @@
             || $action === 'delete'
         ) {
             include_once('nodefyOperationLogs/page-list.php');
-        }  elseif ($action === 'view') { // TODO
-            // include_once('generators/page-edit.php');
+        }  elseif ($action === 'view') {
+            include_once('nodefyOperationLogs/page-view.php');
         } 
     ?>
 </div>

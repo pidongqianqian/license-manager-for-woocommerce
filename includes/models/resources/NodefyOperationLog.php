@@ -84,7 +84,7 @@ class NodefyOperationLog extends AbstractResourceModel implements ModelInterface
         $this->operation         = $nodefyOperationLog->operation;
         $this->info              = $nodefyOperationLog->info;
         $this->note              = $nodefyOperationLog->note;
-        $this->licenseBackup     = $nodefyOperationLog->licenseBackup;
+        $this->licenseBackup     = $nodefyOperationLog->license_backup;
         $this->createdAt         = $nodefyOperationLog->created_at;
         $this->createdBy         = $nodefyOperationLog->created_by === null ? null : intval($nodefyOperationLog->created_by);
     }

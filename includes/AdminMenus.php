@@ -39,7 +39,7 @@ class AdminMenus
     /**
      * Generators page slug.
      */
-    const NODEFY_OPERATION_LOG_PAGE = 'lmfwc_nodefy_operation_log';
+    const NODEFY_OPERATION_LOG_PAGE = 'lmfwc_nodefy_operation_logs';
 
     /**
      * Settings page slug.
@@ -89,6 +89,7 @@ class AdminMenus
         return array(
             'toplevel_page_lmfwc_licenses',
             'license-manager_page_lmfwc_generators',
+            'license-manager_page_lmfwc_nodefy_operation_logs',
             'license-manager_page_lmfwc_settings'
         );
     }

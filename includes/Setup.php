@@ -386,7 +386,8 @@ class Setup
                 '017' => '1',
                 '018' => '1',
                 '019' => '1',
-                '020' => '1'
+                '020' => '1',
+                '021' => '1'
             )
         );
         $defaultSettingsOrderStatus = array(

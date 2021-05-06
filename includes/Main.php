@@ -132,6 +132,7 @@ final class Main extends Singleton
         if ($hook === 'toplevel_page_lmfwc_licenses'
             || $hook === 'license-manager_page_lmfwc_generators'
             || $hook === 'license-manager_page_lmfwc_settings'
+            || $hook === 'license-manager_page_lmfwc_nodefy_operation_logs'
         ) {
             wp_enqueue_script('lmfwc_select2_cdn');
             wp_enqueue_style('lmfwc_select2_cdn');
@@ -176,6 +177,30 @@ final class Main extends Singleton
 
             wp_localize_script(
                 'lmfwc_generators_page_js',
+                'security',
+                array(
+                    'dropdownSearch' => wp_create_nonce('lmfwc_dropdown_search')
+                )
+            );
+        }
+
+        // Operation logs page
+        if ($hook === 'license-manager_page_lmfwc_nodefy_operation_logs') {
+            wp_enqueue_script('lmfwc_nodefy_operation_logs_page_js', LMFWC_JS_URL . 'nodefy_operation_logs_page.js');
+
+            wp_localize_script(
+                'lmfwc_nodefy_operation_logs_page_js',
+                'i18n',
+                array(
+                    'placeholderSearchLicenses'    => __('Search by license ID', 'license-manager-for-woocommerce'),
+                    'placeholderSearchOrders'    => __('Search by order ID or customer email', 'license-manager-for-woocommerce'),
+                    'placeholderSearchProducts'  => __('Search by product ID or product name', 'license-manager-for-woocommerce'),
+                    'placeholderSearchUsers'     => __('Search by user login, name or email', 'license-manager-for-woocommerce')
+                )
+            );
+
+            wp_localize_script(
+                'lmfwc_nodefy_operation_logs_page_js',
                 'security',
                 array(
                     'dropdownSearch' => wp_create_nonce('lmfwc_dropdown_search')

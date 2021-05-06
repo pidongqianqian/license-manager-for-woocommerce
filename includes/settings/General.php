@@ -553,6 +553,12 @@ class General
                 'method'     => 'GET',
                 'deprecated' => false,
             ),
+            array(
+                'id'         => '021',
+                'name'       => 'v2/nodefy-licenses/operation-logs?license_key={license_key}',
+                'method'     => 'GET',
+                'deprecated' => false,
+            ),
         );
         $classList = array(
             'GET'  => 'text-success',

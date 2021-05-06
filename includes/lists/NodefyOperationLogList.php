@@ -9,6 +9,7 @@ use LicenseManagerForWooCommerce\AdminNotice;
 use LicenseManagerForWooCommerce\Enums\LicenseStatus;
 use LicenseManagerForWooCommerce\Models\Resources\NodefyOperationLog as NodefyOperationLogModel;
 use LicenseManagerForWooCommerce\Repositories\Resources\NodefyOperationLog as NodefyOperationLogRepository;
+use LicenseManagerForWooCommerce\Repositories\Resources\License as LicenseResourceRepository;
 use LicenseManagerForWooCommerce\Settings;
 use LicenseManagerForWooCommerce\Setup;
 use WC_Product;
@@ -78,6 +79,18 @@ class NodefyOperationLogList extends WP_List_Table
     {
         $statusLinks = array();
         $current     = !empty($_REQUEST['status']) ? $_REQUEST['status'] : 'all';
+
+        // All link
+        $class = $current == 'all' ? ' class="current"' :'';
+        $allUrl = remove_query_arg('status');
+        $statusLinks['all'] = sprintf(
+            '<a href="%s" %s>%s <span class="count">(%d)</span></a>',
+            $allUrl,
+            $class,
+            __('All', 'license-manager-for-woocommerce'),
+            NodefyOperationLogRepository::instance()->count()
+        );
+
         return $statusLinks;
     }
 
@@ -88,7 +101,118 @@ class NodefyOperationLogList extends WP_List_Table
      */
     protected function extra_tablenav($which)
     {
-       
+        if ($which === 'top') {
+            echo '<div class="alignleft actions">';
+            $this->licenseDropdown();
+            $this->orderDropdown();
+            $this->productDropdown();
+            $this->userDropdown();
+            submit_button(__('Filter', 'license-manager-for-woocommerce'), '', 'filter-action', false);
+            echo '</div>';
+        }
+    }
+
+     /**
+     * Displays the license dropdown filter.
+     */
+    public function licenseDropdown()
+    {
+        $license = false;
+
+        if (isset($_REQUEST['license-id'])) {
+            $license = LicenseResourceRepository::instance()->findBy(array('id' => $_REQUEST['license-id']));
+        }
+
+        ?>
+        <label for="filter-by-license-id" class="screen-reader-text">
+            <span><?php _e('Filter by license', 'license-manager-for-woocommerce'); ?></span>
+        </label>
+        <select name="order-id" id="filter-by-license-id">
+            <?php if ($license): ?>
+                <option selected="selected" value="<?php echo esc_attr($license->getID()); ?>">
+                    <?php echo esc_html(substr($license->getDecryptedLicenseKey(), -13));?>
+                </option>
+            <?php endif; ?>
+        </select>
+        <?php
+    }
+
+    /**
+     * Displays the order dropdown filter.
+     */
+    public function orderDropdown()
+    {
+        $order = false;
+
+        if (isset($_REQUEST['order-id'])) {
+            $order = wc_get_order((int)$_REQUEST['order-id']);
+        }
+
+        ?>
+        <label for="filter-by-order-id" class="screen-reader-text">
+            <span><?php _e('Filter by order', 'license-manager-for-woocommerce'); ?></span>
+        </label>
+        <select name="order-id" id="filter-by-order-id">
+            <?php if ($order): ?>
+                <option selected="selected" value="<?php echo esc_attr($order->get_id()); ?>">
+                    <?php echo $order->get_formatted_billing_full_name(); ?>
+                </option>
+            <?php endif; ?>
+        </select>
+        <?php
+    }
+
+    /**
+     * Displays the product dropdown filter.
+     */
+    public function productDropdown()
+    {
+        $product = false;
+
+        if (isset($_REQUEST['product-id'])) {
+            $product = wc_get_product((int)$_REQUEST['product-id']);
+        }
+
+        ?>
+        <label for="filter-by-product-id" class="screen-reader-text">
+            <span><?php _e('Filter by product', 'license-manager-for-woocommerce'); ?></span>
+        </label>
+        <select name="product-id" id="filter-by-product-id">
+            <?php if ($product): ?>
+                <option selected="selected" value="<?php echo esc_attr($product->get_id()); ?>">
+                    <?php echo $product->get_name(); ?>
+                </option>
+            <?php endif; ?>
+        </select>
+        <?php
+    }
+
+    /**
+     * Displays the user dropdown filter.
+     */
+    public function userDropdown()
+    {
+        $user = false;
+
+        if (isset($_REQUEST['user-id'])) {
+            $user = get_user_by('ID', (int)$_REQUEST['user-id']);
+        }
+        ?>
+        <label for="filter-by-user-id" class="screen-reader-text">
+            <span><?php _e('Filter by user', 'license-manager-for-woocommerce'); ?></span>
+        </label>
+        <select name="user-id" id="filter-by-user-id">
+            <?php if ($user) {
+                printf(
+                    '<option value="%d" selected="selected">%s (#%d - %s)</option>',
+                    $user->ID,
+                    $user->display_name,
+                    $user->ID,
+                    $user->user_email
+                );
+            } ?>
+        </select>
+        <?php
     }
 
     /**
@@ -116,7 +240,7 @@ class NodefyOperationLogList extends WP_List_Table
     public function column_id($item)
     {
         // ID
-        $actions['id'] = sprintf(__('ID: %d', 'license-manager-for-woocommerce'), intval($item['id']));
+        // $actions['id'] = sprintf(__('ID: %d', 'license-manager-for-woocommerce'), intval($item['id']));
 
         // Edit
         $actions['edit'] = sprintf(
@@ -151,25 +275,26 @@ class NodefyOperationLogList extends WP_List_Table
         return $item['id'] . $this->row_actions($actions);
     }
 
-    // /**
-    //  * License id key column.
-    //  *
-    //  * @param array $item Associative array of column name and value pairs
-    //  *
-    //  * @return string
-    //  */
-    // public function column_license_id($item)
-    // {
-    //     $title = '';
-
-    //     if ($order = wc_get_order($item['order_id'])) {
-    //         $html = sprintf(
-    //             '<a href="%s" target="_blank">#%s</a>',
-    //             get_edit_post_link($item['order_id']),
-    //             $order->get_order_number()
-    //         );
-    //     }
-    // }
+    /**
+     * License id key column.
+     *
+     * @param array $item Associative array of column name and value pairs
+     *
+     * @return string
+     */
+    public function column_license_id($item)
+    {
+        $license = LicenseResourceRepository::instance()->findBy(array(
+            'id' => $item['license_id']
+        ));
+        $key = $license ? '...'.esc_html(substr($license->getDecryptedLicenseKey(), -13)) : 'deleted';
+        $html = sprintf(
+            '<a href="%s" target="_blank">#%s</a>',
+            '/wp-admin/admin.php?page=lmfwc_licenses&action=edit&id='.$item['license_id'],
+            $item['license_id'].' - '.$key
+        );
+        return $html;
+    }
 
     /**
      * Order ID column.
@@ -461,6 +586,11 @@ class NodefyOperationLogList extends WP_List_Table
                 ' AND hash = %s',
                 apply_filters('lmfwc_hash', sanitize_text_field($_REQUEST['s']))
             );
+        }
+
+        // Applies the license filter
+        if (isset($_REQUEST['license-id']) && is_numeric($_REQUEST['license-id'])) {
+            $sql .= $wpdb->prepare(' AND license_id = %d', intval($_REQUEST['license-id']));
         }
 
         // Applies the order filter

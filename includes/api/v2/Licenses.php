@@ -10,6 +10,7 @@ use LicenseManagerForWooCommerce\Enums\LicenseSource;
 use LicenseManagerForWooCommerce\Enums\LicenseStatus;
 use LicenseManagerForWooCommerce\Models\Resources\License as LicenseResourceModel;
 use LicenseManagerForWooCommerce\Repositories\Resources\License as LicenseResourceRepository;
+use LicenseManagerForWooCommerce\Repositories\Resources\NodefyOperationLog as NodefyOperationLogRepository;
 use WP_Error;
 use WP_REST_Request;
 use WP_REST_Response;
@@ -191,6 +192,27 @@ class Licenses extends LMFWC_REST_Controller
                             'type'        => 'string',
                         ),
                     ),
+                )
+            )
+        );
+
+        /**
+         * GET nodefy-licenses/operation-logs
+         *
+         * Retrieves a single licenses from the database.
+         */
+        register_rest_route(
+            $this->namespace, $this->nodefy_rest_base . '/operation-logs', array(
+                array(
+                    'methods'             => WP_REST_Server::READABLE,
+                    'callback'            => array($this, 'getOperationLogs'),
+                    'permission_callback' => array($this, 'permissionCallback'),
+                    'args'                => array(
+                        'license_key' => array(
+                            'description' => 'License Key',
+                            'type'        => 'string',
+                        )
+                    )
                 )
             )
         );
@@ -950,6 +972,88 @@ class Licenses extends LMFWC_REST_Controller
         );
 
         return $this->response(true, $result, 200, 'v2/licenses/validate/{license_key}');
+    }
+
+    /**
+     * Callback for the GET licenses/{license_key} route. Retrieves a single license key from the database.
+     *
+     * @param WP_REST_Request $request
+     *
+     * @return WP_REST_Response|WP_Error
+     */
+    public function getOperationLogs(WP_REST_Request $request)
+    {
+        if (!$this->isRouteEnabled($this->settings, '021')) {
+            return $this->routeDisabledError();
+        }
+
+        if (!$this->permissionCheck('license', 'read')) {
+            return new WP_Error(
+                'lmfwc_rest_cannot_view',
+                __('Sorry, you cannot view this resource.', 'license-manager-for-woocommerce'),
+                array(
+                    'status' => $this->authorizationRequiredCode()
+                )
+            );
+        }
+
+        $licenseKey = sanitize_text_field($request->get_param('license_key'));
+
+        if (!$licenseKey) {
+            return new WP_Error(
+                'lmfwc_rest_data_error',
+                'License Key ID invalid.',
+                array('status' => 404)
+            );
+        }
+
+        try {
+            /** @var LicenseResourceModel $license */
+            $license = LicenseResourceRepository::instance()->findBy(
+                array(
+                    'hash' => apply_filters('lmfwc_hash', $licenseKey)
+                )
+            );
+        } catch (Exception $e) {
+            return new WP_Error(
+                'lmfwc_rest_data_error',
+                $e->getMessage(),
+                array('status' => 404)
+            );
+        }
+
+        if (!$license) {
+            return new WP_Error(
+                'lmfwc_rest_data_error',
+                sprintf(
+                    'License Key: %s could not be found.',
+                    $licenseKey
+                ),
+                array('status' => 404)
+            );
+        }
+
+        $logs = NodefyOperationLogRepository::instance()->findAllBy(array(
+            'license_id' => $license->getId()
+        ));
+
+        $response = array();
+
+        foreach ($logs as $log) {
+            $logData = $log->toArray();
+            $product = wc_get_product($log->getProductId());
+            if ($product) {
+                $logData['productName'] = $product->get_name();
+                $logData['productPrice'] = $product->get_price();
+                $logData['licenseKey'] = $licenseKey;
+            }
+            $logData['usersNumber'] = $license->getUsersNumber();
+
+            unset($logData['license_backup']);
+            $response[] = $logData;
+        }
+
+        return $this->response(true, $response, 200, 'v2/nodefy-licenses/operation-logs?license_key={license_key}');
     }
 
     /**

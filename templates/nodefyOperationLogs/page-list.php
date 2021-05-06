@@ -5,13 +5,11 @@
 
 <?php  ?>
 
-<form method="post" id="lmfwc-license-table">
+<form method="post" id="lmfwc-nodefy-operation-logs-table">
     <?php
         $nodefyOperationLogs->prepare_items();
         $nodefyOperationLogs->views();
-        // $nodefyOperationLogs->search_box(__( 'Search logs', 'license-manager-for-woocommerce' ), 'user_id');
+        $nodefyOperationLogs->search_box(__( 'Search logs', 'license-manager-for-woocommerce' ), 'user_id');
         $nodefyOperationLogs->display();
     ?>
 </form>
-
-<span class="lmfwc-txt-copied-to-clipboard" style="display: none"><?php esc_html_e('Copied to clipboard', 'license-manager-for-woocommerce'); ?></span>

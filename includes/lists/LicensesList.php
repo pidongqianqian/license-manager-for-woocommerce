@@ -644,6 +644,10 @@ class LicensesList extends WP_List_Table
         );
     }
 
+    public function column_homeserver($item){
+        return $item['homeserver'] ? $item['homeserver'] : '';
+    }
+
     /**
      * Expires at column.
      *
@@ -963,9 +967,10 @@ class LicensesList extends WP_List_Table
             'user_id'     => __('Customer', 'license-manager-for-woocommerce'),
             'activation'  => __('Activation', 'license-manager-for-woocommerce'),
             'expires_at'  => __('Expires at', 'license-manager-for-woocommerce'),
+            'homeserver'  => __('Homeserver', 'license-manager-for-woocommerce'),
             'valid_for'   => __('Valid for', 'license-manager-for-woocommerce'),
             'status'      => __('Status', 'license-manager-for-woocommerce'),
-            'info'        => __('Info', 'license-manager-for-woocommerce'),
+            // 'info'        => __('Info', 'license-manager-for-woocommerce'),
             'created'     => __('Created', 'license-manager-for-woocommerce'),
             'updated'     => __('Updated', 'license-manager-for-woocommerce')
         );

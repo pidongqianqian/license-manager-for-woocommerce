@@ -337,6 +337,8 @@ class Licenses extends LMFWC_REST_Controller
         // Remove the hash and decrypt the license key
         unset($licenseData['hash']);
         $licenseData['licenseKey'] = $license->getDecryptedLicenseKey();
+        $now = new DateTime();
+        $licenseData['currentTime'] = $now->format('Y-m-d H:i:s');
 
         return $this->response(true, $licenseData, 200, 'v2/licenses/{license_key}');
     }

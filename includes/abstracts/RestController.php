@@ -139,8 +139,8 @@ class RestController extends WP_REST_Controller
     protected function permissionCheck($object, $context = 'read')
     {
         $objects = array(
-            'license'   => 'manage_options',
-            'generator' => 'manage_options'
+            'license'   => 'license_manager_manage_options',
+            'generator' => 'license_manager_manage_options'
         );
 
         $permission = current_user_can($objects[$object]);

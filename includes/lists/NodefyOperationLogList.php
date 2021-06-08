@@ -377,7 +377,7 @@ class NodefyOperationLogList extends WP_List_Table
             $user = get_userdata($item['user_id']);
 
             if ($user instanceof WP_User) {
-                if (current_user_can('manage_options')) {
+                if (current_user_can('license_manager_manage_options')) {
                     $html .= sprintf(
                         '<a href="%s">%s (#%d - %s)</a>',
                         get_edit_user_link($user->ID),
@@ -431,7 +431,7 @@ class NodefyOperationLogList extends WP_List_Table
             $user = get_user_by('id', $item['created_by']);
 
             if ($user instanceof WP_User) {
-                if (current_user_can('manage_options')) {
+                if (current_user_can('license_manager_manage_options')) {
                     $html .= sprintf(
                         '<br>%s <a href="%s">%s</a>',
                         __('by', 'license-manager-for-woocommerce'),

@@ -105,7 +105,7 @@ class AdminMenus
         add_menu_page(
             __('License Manager', 'license-manager-for-woocommerce'),
             __('License Manager', 'license-manager-for-woocommerce'),
-            'manage_options',
+            'license_manager_manage_options',
             self::LICENSES_PAGE,
             array($this, 'licensesPage'),
             'dashicons-lock',
@@ -115,7 +115,7 @@ class AdminMenus
             self::LICENSES_PAGE,
             __('License Manager', 'license-manager-for-woocommerce'),
             __('License keys', 'license-manager-for-woocommerce'),
-            'manage_options',
+            'license_manager_manage_options',
             self::LICENSES_PAGE,
             array($this, 'licensesPage')
         );
@@ -126,7 +126,7 @@ class AdminMenus
             self::LICENSES_PAGE,
             __('License Manager - Generators', 'license-manager-for-woocommerce'),
             __('Generators', 'license-manager-for-woocommerce'),
-            'manage_options',
+            'license_manager_generators',
             self::GENERATORS_PAGE,
             array($this, 'generatorsPage')
         );
@@ -137,7 +137,7 @@ class AdminMenus
             self::LICENSES_PAGE,
             __('License Manager - Operation Log', 'license-manager-for-woocommerce'),
             __('Operation Logs', 'license-manager-for-woocommerce'),
-            'manage_options',
+            'license_manager_manage_options',
             self::NODEFY_OPERATION_LOG_PAGE,
             array($this, 'nodefyOperationLogsPage')
         );
@@ -147,7 +147,7 @@ class AdminMenus
             self::LICENSES_PAGE,
             __( 'License Manager - Logs', 'license-manager-for-woocommerce' ),
             __( 'REST API Logs', 'license-manager-for-woocommerce' ),
-            'manage_options',
+            'license_manager_rest_api_log',
             'lmfwc_nodefy_api_log',
             array($this, 'nodefyShowRestApiLogPage')
         );
@@ -157,7 +157,7 @@ class AdminMenus
             self::LICENSES_PAGE,
             __('License Manager - Settings', 'license-manager-for-woocommerce'),
             __('Settings', 'license-manager-for-woocommerce'),
-            'manage_options',
+            'license_manager_settings',
             self::SETTINGS_PAGE,
             array($this, 'settingsPage')
         );
@@ -238,7 +238,7 @@ class AdminMenus
 
         // Edit license keys
         if ($action === 'edit') {
-            if (!current_user_can('manage_options')) {
+            if (!current_user_can('license_manager_manage_options')) {
                 wp_die(__('Insufficient permission', 'license-manager-for-woocommerce'));
             }
 
@@ -300,7 +300,7 @@ class AdminMenus
 
         // Edit generators
         if ($action === 'edit') {
-            if (!current_user_can('manage_options')) {
+            if (!current_user_can('license_manager_manage_options')) {
                 wp_die(__('Insufficient permission', 'license-manager-for-woocommerce'));
             }
 
@@ -338,7 +338,7 @@ class AdminMenus
 
         // view logs
         if ($action === 'view') {
-            if (!current_user_can('manage_options')) {
+            if (!current_user_can('license_manager_manage_options')) {
                 wp_die(__('Insufficient permission', 'license-manager-for-woocommerce'));
             }
 
@@ -484,7 +484,7 @@ class AdminMenus
      */
     public function adminFooterText($footerText)
     {
-        if (!current_user_can('manage_options') || !function_exists('wc_get_screen_ids')) {
+        if (!current_user_can('license_manager_manage_options') || !function_exists('wc_get_screen_ids')) {
             return $footerText;
         }
 

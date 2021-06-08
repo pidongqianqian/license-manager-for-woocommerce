@@ -45,7 +45,7 @@ class General
     {
         if (isset($_POST['lmfwc_stock_synchronize'])) {
             // Permission check
-            if (!current_user_can('manage_options')) {
+            if (!current_user_can('license_manager_manage_options')) {
                 return $settings;
             }
 

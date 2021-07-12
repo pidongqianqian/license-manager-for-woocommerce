@@ -49,6 +49,11 @@ class LicensesList extends WP_List_Table
     protected $gmtOffset;
 
     /**
+     * @var array
+     */
+    protected $roles;
+
+    /**
      * LicensesList constructor.
      */
     public function __construct()
@@ -63,10 +68,20 @@ class LicensesList extends WP_List_Table
             )
         );
 
+        $user = wp_get_current_user();
+        $this->roles = $user ? (array)$user->roles : [];
         $this->table      = $wpdb->prefix . Setup::LICENSES_TABLE_NAME;
         $this->dateFormat = get_option('date_format');
         $this->timeFormat = get_option('time_format');
         $this->gmtOffset  = get_option('gmt_offset');
+    }
+
+    protected function is_sales() {
+        if (count($this->roles) && $this->roles[0] === 'sales'){
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -278,22 +293,37 @@ class LicensesList extends WP_List_Table
         }
 
         // ID
-        $actions['id'] = sprintf(__('ID: %d', 'license-manager-for-woocommerce'), intval($item['id']));
+        // $actions['id'] = sprintf(__('ID: %d', 'license-manager-for-woocommerce'), intval($item['id']));
 
-        // Edit
-        $actions['edit'] = sprintf(
+        // // Edit
+        // $actions['edit'] = sprintf(
+        //     '<a href="%s">%s</a>',
+        //     admin_url(
+        //         wp_nonce_url(
+        //             sprintf(
+        //                 'admin.php?page=%s&action=edit&id=%d',
+        //                 AdminMenus::LICENSES_PAGE,
+        //                 intval($item['id'])
+        //             ),
+        //             'lmfwc_edit_license_key'
+        //         )
+        //     ),
+        //     __('Edit', 'license-manager-for-woocommerce')
+        // );
+
+        $actions['view'] = sprintf(
             '<a href="%s">%s</a>',
             admin_url(
                 wp_nonce_url(
                     sprintf(
-                        'admin.php?page=%s&action=edit&id=%d',
+                        'admin.php?page=%s&action=view&id=%d',
                         AdminMenus::LICENSES_PAGE,
                         intval($item['id'])
                     ),
-                    'lmfwc_edit_license_key'
+                    'lmfwc_view_license_key'
                 )
             ),
-            __('Edit', 'license-manager-for-woocommerce')
+            __('View', 'license-manager-for-woocommerce')
         );
 
         // Hide/Show
@@ -343,19 +373,19 @@ class LicensesList extends WP_List_Table
             }
         }
 
-        // Delete
-        $actions['delete'] = sprintf(
-            '<a href="%s">%s</a>',
-            admin_url(
-                sprintf(
-                    'admin.php?page=%s&action=delete&id=%d&_wpnonce=%s',
-                    AdminMenus::LICENSES_PAGE,
-                    intval($item['id']),
-                    wp_create_nonce('delete')
-                )
-            ),
-            __('Delete', 'license-manager-for-woocommerce')
-        );
+        // // Delete
+        // $actions['delete'] = sprintf(
+        //     '<a href="%s">%s</a>',
+        //     admin_url(
+        //         sprintf(
+        //             'admin.php?page=%s&action=delete&id=%d&_wpnonce=%s',
+        //             AdminMenus::LICENSES_PAGE,
+        //             intval($item['id']),
+        //             wp_create_nonce('delete')
+        //         )
+        //     ),
+        //     __('Delete', 'license-manager-for-woocommerce')
+        // );
 
         return $title . $this->row_actions($actions);
     }
@@ -414,11 +444,18 @@ class LicensesList extends WP_List_Table
                 }
             } else {
                 $html = sprintf(
-                    '<a href="%s" target="_blank">#%s - %s</a>',
-                    get_edit_post_link($item['product_id']),
+                    '#%s - %s',
                     $product->get_id(),
                     $product->get_name()
                 );
+                if (!$this->is_sales()){
+                    $html = sprintf(
+                        '<a href="%s" target="_blank">#%s - %s</a>',
+                        get_edit_post_link($item['product_id']),
+                        $product->get_id(),
+                        $product->get_name()
+                    );
+                }
             }
         }
 
@@ -441,8 +478,12 @@ class LicensesList extends WP_List_Table
             $user = get_userdata($item['user_id']);
 
             if ($user instanceof WP_User) {
-                if (current_user_can('license_manager_manage_options')) {
-                    $html .= sprintf(
+                $str = sprintf(
+                    '<span>%s</span>',
+                    $user->display_name
+                );
+                if (current_user_can('license_manager_manage_options') && !$this->is_sales()) {
+                    $str = sprintf(
                         '<a href="%s">%s (#%d - %s)</a>',
                         get_edit_user_link($user->ID),
                         $user->display_name,
@@ -451,12 +492,7 @@ class LicensesList extends WP_List_Table
                     );
                 }
 
-                else {
-                    $html .= sprintf(
-                        '<span>%s</span>',
-                        $user->display_name
-                    );
-                }
+                $html .= $str;
             }
         }
 
@@ -547,8 +583,13 @@ class LicensesList extends WP_List_Table
             $user = get_user_by('id', $item['created_by']);
 
             if ($user instanceof WP_User) {
-                if (current_user_can('license_manager_manage_options')) {
-                    $html .= sprintf(
+                $str = sprintf(
+                    '<br><span>%s %s</span>',
+                    __('by', 'license-manager-for-woocommerce'),
+                    $user->display_name
+                );
+                if (current_user_can('license_manager_manage_options') && !$this->is_sales()) {
+                    $str = sprintf(
                         '<br>%s <a href="%s">%s</a>',
                         __('by', 'license-manager-for-woocommerce'),
                         get_edit_user_link($user->ID),
@@ -556,13 +597,7 @@ class LicensesList extends WP_List_Table
                     );
                 }
 
-                else {
-                    $html .= sprintf(
-                        '<br><span>%s %s</span>',
-                        __('by', 'license-manager-for-woocommerce'),
-                        $user->display_name
-                    );
-                }
+                $html .= $str;
             }
         }
 
@@ -600,8 +635,13 @@ class LicensesList extends WP_List_Table
             $user = get_user_by('id', $item['updated_by']);
 
             if ($user instanceof WP_User) {
-                if (current_user_can('license_manager_manage_options')) {
-                    $html .= sprintf(
+                $str = sprintf(
+                    '<br><span>%s %s</span>',
+                    __('by', 'license-manager-for-woocommerce'),
+                    $user->display_name
+                );
+                if (current_user_can('license_manager_manage_options') && !$this->is_sales()) {
+                    $str = sprintf(
                         '<br>%s <a href="%s">%s</a>',
                         __('by', 'license-manager-for-woocommerce'),
                         get_edit_user_link($user->ID),
@@ -609,13 +649,7 @@ class LicensesList extends WP_List_Table
                     );
                 }
 
-                else {
-                    $html .= sprintf(
-                        '<br><span>%s %s</span>',
-                        __('by', 'license-manager-for-woocommerce'),
-                        $user->display_name
-                    );
-                }
+                $html .= $str;
             }
         }
 
@@ -801,7 +835,7 @@ class LicensesList extends WP_List_Table
             'deactivate'        => __('Deactivate', 'license-manager-for-woocommerce'),
             'mark_as_sold'      => __('Mark as sold', 'license-manager-for-woocommerce'),
             'mark_as_delivered' => __('Mark as delivered', 'license-manager-for-woocommerce'),
-            'delete'            => __('Delete', 'license-manager-for-woocommerce'),
+            // 'delete'            => __('Delete', 'license-manager-for-woocommerce'),
             'export_csv'        => __('Export (CSV)', 'license-manager-for-woocommerce'),
             'export_pdf'        => __('Export (PDF)', 'license-manager-for-woocommerce')
         );

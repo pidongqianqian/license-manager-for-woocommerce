@@ -14,6 +14,8 @@
             include_once('licenses/page-import.php');
         } elseif ($action === 'edit') {
             include_once('licenses/page-edit.php');
+        } elseif ($action === 'view') {
+            include_once('licenses/page-view.php');
         }
     ?>
 </div>

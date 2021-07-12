@@ -237,7 +237,7 @@ class AdminMenus
         );
 
         // Edit license keys
-        if ($action === 'edit') {
+        if ($action === 'edit' || $action === 'view') {
             if (!current_user_can('license_manager_manage_options')) {
                 wp_die(__('Insufficient permission', 'license-manager-for-woocommerce'));
             }
@@ -263,7 +263,7 @@ class AdminMenus
         }
 
         // Edit, add or import license keys
-        if ($action === 'edit' || $action === 'add' || $action === 'import') {
+        if ($action === 'edit' || $action === 'add' || $action === 'import' || $action === 'view') {
             wp_enqueue_style('lmfwc-jquery-ui-datepicker');
             wp_enqueue_script('jquery-ui-datepicker');
             $statusOptions = LicenseStatus::dropdown();

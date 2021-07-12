@@ -50,6 +50,11 @@ class NodefyOperationLogList extends WP_List_Table
     protected $gmtOffset;
 
     /**
+     * @var array
+     */
+    protected $roles;
+
+    /**
      * LicensesList constructor.
      */
     public function __construct()
@@ -64,10 +69,16 @@ class NodefyOperationLogList extends WP_List_Table
             )
         );
 
+        $user = wp_get_current_user();
+        $this->roles = $user ? (array)$user->roles : [];
         $this->table      = $wpdb->prefix . Setup::NODEFY_OPERATION_LOG_TABLE_NAME;
         $this->dateFormat = get_option('date_format');
         $this->timeFormat = get_option('time_format');
         $this->gmtOffset  = get_option('gmt_offset');
+    }
+
+    protected function is_sales() {
+        return count($this->roles) > 0 && $this->roles[0] === 'sales' ? true : false;
     }
 
     /**
@@ -259,18 +270,18 @@ class NodefyOperationLogList extends WP_List_Table
         );
 
         // Delete
-        $actions['delete'] = sprintf(
-            '<a href="%s">%s</a>',
-            admin_url(
-                sprintf(
-                    'admin.php?page=%s&action=delete&id=%d&_wpnonce=%s',
-                    AdminMenus::NODEFY_OPERATION_LOG_PAGE,
-                    intval($item['id']),
-                    wp_create_nonce('delete')
-                )
-            ),
-            __('Delete', 'license-manager-for-woocommerce')
-        );
+        // $actions['delete'] = sprintf(
+        //     '<a href="%s">%s</a>',
+        //     admin_url(
+        //         sprintf(
+        //             'admin.php?page=%s&action=delete&id=%d&_wpnonce=%s',
+        //             AdminMenus::NODEFY_OPERATION_LOG_PAGE,
+        //             intval($item['id']),
+        //             wp_create_nonce('delete')
+        //         )
+        //     ),
+        //     __('Delete', 'license-manager-for-woocommerce')
+        // );
 
         return $item['id'] . $this->row_actions($actions);
     }
@@ -349,12 +360,21 @@ class NodefyOperationLogList extends WP_List_Table
                     );
                 }
             } else {
-                $html = sprintf(
-                    '<a href="%s" target="_blank">#%s - %s</a>',
-                    get_edit_post_link($item['product_id']),
-                    $product->get_id(),
-                    $product->get_name()
-                );
+                if ($this->is_sales()){
+                    $html = sprintf(
+                        '#%s - %s',
+                        $product->get_id(),
+                        $product->get_name()
+                    );
+                } else {
+                    $html = sprintf(
+                        '<a href="%s" target="_blank">#%s - %s</a>',
+                        get_edit_post_link($item['product_id']),
+                        $product->get_id(),
+                        $product->get_name()
+                    );
+                }
+                
             }
         }
 
@@ -377,8 +397,14 @@ class NodefyOperationLogList extends WP_List_Table
             $user = get_userdata($item['user_id']);
 
             if ($user instanceof WP_User) {
-                if (current_user_can('license_manager_manage_options')) {
-                    $html .= sprintf(
+                $str = sprintf(
+                    '%s (#%d - %s)',
+                    $user->display_name,
+                    $user->ID,
+                    $user->user_email
+                );
+                if (current_user_can('license_manager_manage_options') && !$this->is_sales()) {
+                    $str = sprintf(
                         '<a href="%s">%s (#%d - %s)</a>',
                         get_edit_user_link($user->ID),
                         $user->display_name,
@@ -386,13 +412,7 @@ class NodefyOperationLogList extends WP_List_Table
                         $user->user_email
                     );
                 }
-
-                else {
-                    $html .= sprintf(
-                        '<span>%s</span>',
-                        $user->display_name
-                    );
-                }
+                $html .= $str;
             }
         }
 
@@ -431,22 +451,20 @@ class NodefyOperationLogList extends WP_List_Table
             $user = get_user_by('id', $item['created_by']);
 
             if ($user instanceof WP_User) {
-                if (current_user_can('license_manager_manage_options')) {
-                    $html .= sprintf(
+                $str =  sprintf(
+                    '<br><span>%s %s</span>',
+                    __('by', 'license-manager-for-woocommerce'),
+                    $user->display_name
+                );
+                if (current_user_can('license_manager_manage_options') && !$this->is_sales()) {
+                    $str = sprintf(
                         '<br>%s <a href="%s">%s</a>',
                         __('by', 'license-manager-for-woocommerce'),
                         get_edit_user_link($user->ID),
                         $user->display_name
                     );
                 }
-
-                else {
-                    $html .= sprintf(
-                        '<br><span>%s %s</span>',
-                        __('by', 'license-manager-for-woocommerce'),
-                        $user->display_name
-                    );
-                }
+                $html .= $str;
             }
         }
 
@@ -520,7 +538,7 @@ class NodefyOperationLogList extends WP_List_Table
     public function get_bulk_actions()
     {
         $actions = array(
-            'delete'            => __('Delete', 'license-manager-for-woocommerce'),
+            // 'delete'            => __('Delete', 'license-manager-for-woocommerce'),
         );
 
         return $actions;

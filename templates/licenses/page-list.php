@@ -5,14 +5,15 @@
     margin-left: 0px;
 }
 </style>
-
 <h1 class="wp-heading-inline"><?php esc_html_e('License keys', 'license-manager-for-woocommerce'); ?></h1>
+<?php if(false): ?>
 <!-- <a class="page-title-action" href="<?php echo esc_url($addLicenseUrl); ?>">
     <span><?php esc_html_e('Add new', 'license-manager-for-woocommerce');?></span>
-</a>
-<a class="page-title-action" href="<?php echo esc_url($importLicenseUrl); ?>">
+</a> -->
+<!-- <a class="page-title-action" href="<?php echo esc_url($importLicenseUrl); ?>">
     <span><?php esc_html_e('Import', 'license-manager-for-woocommerce');?></span>
 </a> -->
+<?php endif; ?>
 <hr class="wp-header-end">
 
 <?php  ?>

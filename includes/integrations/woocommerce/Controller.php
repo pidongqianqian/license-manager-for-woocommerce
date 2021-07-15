@@ -213,6 +213,10 @@ class Controller extends AbstractIntegrationController implements IntegrationCon
             $userId = $order->get_user_id();
         }
 
+        if (!$orderId && !$order) {
+            $userId = get_current_user_id();
+        }
+
         $gmtDate           = new DateTime('now', new DateTimeZone('GMT'));
         $invalidKeysAmount = 0;
         $expiresAt         = null;

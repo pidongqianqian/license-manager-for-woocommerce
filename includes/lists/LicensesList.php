@@ -373,19 +373,23 @@ class LicensesList extends WP_List_Table
             }
         }
 
-        // // Delete
-        // $actions['delete'] = sprintf(
-        //     '<a href="%s">%s</a>',
-        //     admin_url(
-        //         sprintf(
-        //             'admin.php?page=%s&action=delete&id=%d&_wpnonce=%s',
-        //             AdminMenus::LICENSES_PAGE,
-        //             intval($item['id']),
-        //             wp_create_nonce('delete')
-        //         )
-        //     ),
-        //     __('Delete', 'license-manager-for-woocommerce')
-        // );
+        // Delete
+        $is_administrator = in_array( 'administrator', (array) wp_get_current_user()->roles ) ? true : false;
+        // only administrator can delete the license that created by self and not activated
+        if ($is_administrator && (int)$item['created_by'] === wp_get_current_user()->id && !$item['times_activated']){
+            $actions['delete'] = sprintf(
+                '<a href="%s">%s</a>',
+                admin_url(
+                    sprintf(
+                        'admin.php?page=%s&action=delete&id=%d&_wpnonce=%s',
+                        AdminMenus::LICENSES_PAGE,
+                        intval($item['id']),
+                        wp_create_nonce('delete')
+                    )
+                ),
+                __('Delete', 'license-manager-for-woocommerce')
+            );
+        }
 
         return $title . $this->row_actions($actions);
     }

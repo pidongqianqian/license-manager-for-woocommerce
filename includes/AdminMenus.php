@@ -323,6 +323,13 @@ class AdminMenus
             if (!$generatorsDropdown) {
                 $generatorsDropdown = array();
             }
+
+            // get all product
+            $proArgs = array(
+                'category' => array( 'individual' ),
+                'orderby'  => 'name',
+            );
+            $productsDropdown = wc_get_products( $proArgs );
         }
 
         include LMFWC_TEMPLATES_DIR . 'page-generators.php';

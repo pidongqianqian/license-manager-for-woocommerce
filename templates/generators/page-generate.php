@@ -21,7 +21,7 @@ defined('ABSPATH') || exit;
     <table class="form-table">
         <tbody>
         <!-- GENERATOR -->
-        <tr scope="row">
+        <!-- <tr scope="row">
             <th scope="row">
                 <label for="generate__generator"><?php esc_html_e('Generator', 'license-manager-for-woocommerce');?></label>
                 <span class="text-danger">*</span></label>
@@ -33,6 +33,21 @@ defined('ABSPATH') || exit;
                     <?php endforeach; ?>
                 </select>
                 <p class="description"><?php esc_html_e('The selected generator\'s rules will be used to generate the license keys.', 'license-manager-for-woocommerce');?></p>
+            </td>
+        </tr> -->
+
+         <!-- PRODUCT -->
+         <tr scope="row">
+            <th scope="row"><label for="generate__product"><?php esc_html_e('Product (Required)', 'license-manager-for-woocommerce');?></label></th>
+            <td>
+                <!-- <select name="product_id" id="generate__product" class="regular-text"> -->
+                <select name="product_id" class="regular-text">
+                    <?php foreach($productsDropdown as $product): ?>
+                        <option value="<?php esc_attr_e($product->get_ID()); ?>"><?php esc_attr_e($product->get_name()); ?></option>
+                    <?php endforeach; ?>
+                </select>
+                <p class="description"><?php esc_html_e('The product to which the license keys will be assigned.', 'license-manager-for-woocommerce');?></p>
+                <input type="hidden" name="status" value="2"/>
             </td>
         </tr>
 
@@ -46,34 +61,30 @@ defined('ABSPATH') || exit;
         </tr>
 
         <!-- STATUS -->
-        <tr scope="row">
+        <!-- <tr scope="row">
             <th scope="row"><label for="edit__status"><?php esc_html_e('Status', 'license-manager-for-woocommerce');?></label></th>
             <td>
                 <select id="edit__status" name="status" class="regular-text">
                     <?php foreach($statusOptions as $option): ?>
-                        <option value="<?php echo esc_html($option['value']); ?>"><?php echo esc_html($option['name']); ?></option>
+                        <option 
+                            value="<?php echo esc_html($option['value']); ?>"
+                            <?php if($option['value'] === 2) { echo 'selected'; }?>
+                        >
+                            <?php echo esc_html($option['name']); ?>
+                        </option>
                     <?php endforeach; ?>
                 </select>
             </td>
-        </tr>
+        </tr> -->
 
         <!-- ORDER -->
-        <tr scope="row">
-            <th scope="row"><label for="generate__order"><?php esc_html_e('Order', 'license-manager-for-woocommerce');?></label></th>
+        <!-- <tr scope="row">
+            <th scope="row"><label for="generate__order"><?php esc_html_e('Order (Option)', 'license-manager-for-woocommerce');?></label></th>
             <td>
                 <select name="order_id" id="generate__order" class="regular-text"></select>
                 <p class="description"><?php esc_html_e('The order to which the license keys will be assigned.', 'license-manager-for-woocommerce');?></p>
             </td>
-        </tr>
-
-        <!-- PRODUCT -->
-        <tr scope="row">
-            <th scope="row"><label for="generate__product"><?php esc_html_e('Product', 'license-manager-for-woocommerce');?></label></th>
-            <td>
-                <select name="product_id" id="generate__product" class="regular-text"></select>
-                <p class="description"><?php esc_html_e('The product to which the license keys will be assigned.', 'license-manager-for-woocommerce');?></p>
-            </td>
-        </tr>
+        </tr> -->
 
         </tbody>
     </table>

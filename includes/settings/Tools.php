@@ -85,12 +85,28 @@ class Tools
                 'name' => __('Order ID', 'license-manager-for-woocommerce')
             ),
             array(
+                'slug' => 'order_num',
+                'name' => __('Order Number', 'license-manager-for-woocommerce')
+            ),
+            array(
                 'slug' => 'product_id',
                 'name' => __('Product ID', 'license-manager-for-woocommerce')
             ),
             array(
+                'slug' => 'product_name',
+                'name' => __('Product Name', 'license-manager-for-woocommerce')
+            ),
+            array(
                 'slug' => 'user_id',
                 'name' => __('User ID', 'license-manager-for-woocommerce')
+            ),
+            array(
+                'slug' => 'user_name',
+                'name' => __('User Name', 'license-manager-for-woocommerce')
+            ),
+            array(
+                'slug' => 'user_email',
+                'name' => __('User Email', 'license-manager-for-woocommerce')
             ),
             array(
                 'slug' => 'license_key',
@@ -115,6 +131,10 @@ class Tools
             array(
                 'slug' => 'times_activated_max',
                 'name' => __('Times activated (max.)', 'license-manager-for-woocommerce')
+            ),
+            array(
+                'slug' => 'activated_at',
+                'name' => __('Activated at', 'license-manager-for-woocommerce')
             ),
             array(
                 'slug' => 'created_at',

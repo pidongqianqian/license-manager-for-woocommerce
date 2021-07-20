@@ -84,6 +84,10 @@ class LicensesList extends WP_List_Table
         }
     }
 
+    protected function is_super_admin() {
+        return in_array( 'administrator', (array) wp_get_current_user()->roles ) ? true : false;
+    }
+
     /**
      * Creates the different status filter links at the top of the table.
      *
@@ -373,10 +377,9 @@ class LicensesList extends WP_List_Table
             }
         }
 
-        // Delete
-        $is_administrator = in_array( 'administrator', (array) wp_get_current_user()->roles ) ? true : false;
-        // only administrator can delete the license that created by self and not activated
-        if ($is_administrator && (int)$item['created_by'] === wp_get_current_user()->id && !$item['times_activated']){
+        // Delete - disable now
+        // only administrator can delete the license
+        if ($this->is_super_admin() && false){
             $actions['delete'] = sprintf(
                 '<a href="%s">%s</a>',
                 admin_url(
@@ -387,7 +390,7 @@ class LicensesList extends WP_List_Table
                         wp_create_nonce('delete')
                     )
                 ),
-                __('Delete', 'license-manager-for-woocommerce')
+                __('Permanently Delete', 'license-manager-for-woocommerce')
             );
         }
 
@@ -452,7 +455,7 @@ class LicensesList extends WP_List_Table
                     $product->get_id(),
                     $product->get_name()
                 );
-                if (!$this->is_sales()){
+                if ($this->is_super_admin()){
                     $html = sprintf(
                         '<a href="%s" target="_blank">#%s - %s</a>',
                         get_edit_post_link($item['product_id']),
@@ -550,6 +553,38 @@ class LicensesList extends WP_List_Table
                 $icon,
                 $timesActivated,
                 $timesActivatedMax
+            );
+        }
+
+        return $html;
+    }
+
+    public function column_is_activated($item)
+    {
+        $html = '';
+
+        if ($item['times_activated'] === null) {
+            $html = 'No';
+        } else {
+            $html = 'Yes';
+        }
+        return $html;
+    }
+
+    public function column_activated($item)
+    {
+        $html = '';
+
+        if ($item['activated_at']) {
+            $offsetSeconds = floatval($this->gmtOffset) * 60 * 60;
+            $timestamp     = strtotime($item['activated_at']) + $offsetSeconds;
+            $result        = date('Y-m-d H:i:s', $timestamp);
+            $date          = new DateTime($result);
+
+            $html .= sprintf(
+                '<span><b>%s, %s</b></span>',
+                $date->format($this->dateFormat),
+                $date->format($this->timeFormat)
             );
         }
 
@@ -818,7 +853,7 @@ class LicensesList extends WP_List_Table
             'product_id' => array('product_id', true),
             'user_id'    => array('user_id', true),
             'expires_at' => array('expires_at', true),
-            'status'     => array('status', true),
+            // 'status'     => array('status', true),
             'created'    => array('created_at', true),
             'updated'    => array('updated_at', true),
             'activation' => array('times_activated_max', true)
@@ -835,14 +870,22 @@ class LicensesList extends WP_List_Table
     public function get_bulk_actions()
     {
         $actions = array(
-            'activate'          => __('Activate', 'license-manager-for-woocommerce'),
-            'deactivate'        => __('Deactivate', 'license-manager-for-woocommerce'),
-            'mark_as_sold'      => __('Mark as sold', 'license-manager-for-woocommerce'),
-            'mark_as_delivered' => __('Mark as delivered', 'license-manager-for-woocommerce'),
+            // 'activate'          => __('Activate', 'license-manager-for-woocommerce'),
+            // 'deactivate'        => __('Deactivate', 'license-manager-for-woocommerce'),
+            // 'mark_as_sold'      => __('Mark as sold', 'license-manager-for-woocommerce'),
+            // 'mark_as_delivered' => __('Mark as delivered', 'license-manager-for-woocommerce'),
             // 'delete'            => __('Delete', 'license-manager-for-woocommerce'),
-            'export_csv'        => __('Export (CSV)', 'license-manager-for-woocommerce'),
-            'export_pdf'        => __('Export (PDF)', 'license-manager-for-woocommerce')
+            // 'export_csv'        => __('Export (CSV)', 'license-manager-for-woocommerce'),
+            // 'export_pdf'        => __('Export (PDF)', 'license-manager-for-woocommerce')
         );
+
+        $actions['export_csv'] = __('Export (CSV)', 'license-manager-for-woocommerce');
+        // $actions['export_pdf'] = __('Export (PDF)', 'license-manager-for-woocommerce');
+
+        if ($this->is_super_admin()){
+            $actions['notice'] = __('-----------------', 'license-manager-for-woocommerce');
+            $actions['delete'] = __('Permanently Delete', 'license-manager-for-woocommerce');
+        }
 
         return $actions;
     }
@@ -855,18 +898,18 @@ class LicensesList extends WP_List_Table
         $action = $this->current_action();
 
         switch ($action) {
-            case 'activate':
-                $this->toggleLicenseKeyStatus(LicenseStatus::ACTIVE);
-                break;
-            case 'deactivate':
-                $this->toggleLicenseKeyStatus(LicenseStatus::INACTIVE);
-                break;
-            case 'mark_as_sold':
-                $this->toggleLicenseKeyStatus(LicenseStatus::SOLD);
-                break;
-            case 'mark_as_delivered':
-                $this->toggleLicenseKeyStatus(LicenseStatus::DELIVERED);
-                break;
+            // case 'activate':
+            //     $this->toggleLicenseKeyStatus(LicenseStatus::ACTIVE);
+            //     break;
+            // case 'deactivate':
+            //     $this->toggleLicenseKeyStatus(LicenseStatus::INACTIVE);
+            //     break;
+            // case 'mark_as_sold':
+            //     $this->toggleLicenseKeyStatus(LicenseStatus::SOLD);
+            //     break;
+            // case 'mark_as_delivered':
+            //     $this->toggleLicenseKeyStatus(LicenseStatus::DELIVERED);
+            //     break;
             case 'delete':
                 $this->deleteLicenseKeys();
                 break;
@@ -1003,12 +1046,14 @@ class LicensesList extends WP_List_Table
             'order_id'    => __('Order', 'license-manager-for-woocommerce'),
             'product_id'  => __('Product', 'license-manager-for-woocommerce'),
             'user_id'     => __('Customer', 'license-manager-for-woocommerce'),
-            'activation'  => __('Activation', 'license-manager-for-woocommerce'),
+            // 'activation'  => __('Activation', 'license-manager-for-woocommerce'),
             'expires_at'  => __('Expires at', 'license-manager-for-woocommerce'),
-            'homeserver'  => __('Homeserver', 'license-manager-for-woocommerce'),
             'valid_for'   => __('Valid for', 'license-manager-for-woocommerce'),
-            'status'      => __('Status', 'license-manager-for-woocommerce'),
+            // 'status'      => __('Status', 'license-manager-for-woocommerce'),
             // 'info'        => __('Info', 'license-manager-for-woocommerce'),
+            'is_activated'=> __('Is Activated', 'license-manager-for-woocommerce'),
+            'homeserver'  => __('Homeserver', 'license-manager-for-woocommerce'),
+            'activated'   => __('Activated', 'license-manager-for-woocommerce'),
             'created'     => __('Created', 'license-manager-for-woocommerce'),
             'updated'     => __('Updated', 'license-manager-for-woocommerce')
         );

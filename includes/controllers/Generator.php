@@ -108,47 +108,47 @@ class Generator
             exit();
         }
 
-        if ($_POST['charset'] == '' || !is_string($_POST['charset'])) {
-            AdminNotice::error(__('The Generator charset is invalid.', 'license-manager-for-woocommerce'));
-            wp_redirect(
-                admin_url(
-                    sprintf(
-                        'admin.php?page=%s&action=edit&id=%d',
-                        AdminMenus::GENERATORS_PAGE,
-                        $generatorId
-                    )
-                )
-            );
-            exit();
-        }
+        // if ($_POST['charset'] == '' || !is_string($_POST['charset'])) {
+        //     AdminNotice::error(__('The Generator charset is invalid.', 'license-manager-for-woocommerce'));
+        //     wp_redirect(
+        //         admin_url(
+        //             sprintf(
+        //                 'admin.php?page=%s&action=edit&id=%d',
+        //                 AdminMenus::GENERATORS_PAGE,
+        //                 $generatorId
+        //             )
+        //         )
+        //     );
+        //     exit();
+        // }
 
-        if ($_POST['chunks'] == '' || !is_numeric($_POST['chunks'])) {
-            AdminNotice::error(__('The Generator chunks are invalid.', 'license-manager-for-woocommerce'));
-            wp_redirect(
-                admin_url(
-                    sprintf(
-                        'admin.php?page=%s&action=edit&id=%d',
-                        AdminMenus::GENERATORS_PAGE,
-                        $generatorId
-                    )
-                )
-            );
-            exit();
-        }
+        // if ($_POST['chunks'] == '' || !is_numeric($_POST['chunks'])) {
+        //     AdminNotice::error(__('The Generator chunks are invalid.', 'license-manager-for-woocommerce'));
+        //     wp_redirect(
+        //         admin_url(
+        //             sprintf(
+        //                 'admin.php?page=%s&action=edit&id=%d',
+        //                 AdminMenus::GENERATORS_PAGE,
+        //                 $generatorId
+        //             )
+        //         )
+        //     );
+        //     exit();
+        // }
 
-        if ($_POST['chunk_length'] == '' || !is_numeric($_POST['chunk_length'])) {
-            AdminNotice::error(__('The Generator chunk length is invalid.', 'license-manager-for-woocommerce'));
-            wp_redirect(
-                admin_url(
-                    sprintf(
-                        'admin.php?page=%s&action=edit&id=%d',
-                        AdminMenus::GENERATORS_PAGE,
-                        $generatorId
-                    )
-                )
-            );
-            exit();
-        }
+        // if ($_POST['chunk_length'] == '' || !is_numeric($_POST['chunk_length'])) {
+        //     AdminNotice::error(__('The Generator chunk length is invalid.', 'license-manager-for-woocommerce'));
+        //     wp_redirect(
+        //         admin_url(
+        //             sprintf(
+        //                 'admin.php?page=%s&action=edit&id=%d',
+        //                 AdminMenus::GENERATORS_PAGE,
+        //                 $generatorId
+        //             )
+        //         )
+        //     );
+        //     exit();
+        // }
 
         // Update the generator.
         $generator = GeneratorResourceRepository::instance()->update(
@@ -194,9 +194,6 @@ class Generator
         $orderId     = null;
         $productId   = null;
 
-        /** @var GeneratorResourceModel $generator */
-        $generator = GeneratorResourceRepository::instance()->find($generatorId);
-
         if (array_key_exists('order_id', $_POST) && $_POST['order_id']) {
             $orderId = absint($_POST['order_id']);
         }
@@ -204,6 +201,13 @@ class Generator
         if (array_key_exists('product_id', $_POST) && $_POST['product_id']) {
             $productId = absint($_POST['product_id']);
         }
+
+        if (!$generatorId && $productId){
+            $generatorId = get_post_meta( $productId, 'lmfwc_licensed_product_assigned_generator', true );
+        }
+
+        /** @var GeneratorResourceModel $generator */
+        $generator = GeneratorResourceRepository::instance()->find($generatorId);
 
         // Validate request.
         if (!$generator) {
@@ -248,6 +252,20 @@ class Generator
             );
             exit();
         }
+
+        if (!$productId) {
+            AdminNotice::error(__('Need choose one product.', 'license-manager-for-woocommerce'));
+            wp_redirect(
+                admin_url(
+                    sprintf(
+                        'admin.php?page=%s&action=generate',
+                        AdminMenus::GENERATORS_PAGE
+                    )
+                )
+            );
+            exit();
+        }
+
 
         $licenses = apply_filters('lmfwc_generate_license_keys', $amount, $generator);
 

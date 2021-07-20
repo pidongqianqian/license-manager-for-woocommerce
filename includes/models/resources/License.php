@@ -73,6 +73,11 @@ class License extends AbstractResourceModel implements ModelInterface
     /**
      * @var string
      */
+    protected $activatedAt;
+
+    /**
+     * @var string
+     */
     protected $createdAt;
 
     /**
@@ -132,6 +137,7 @@ class License extends AbstractResourceModel implements ModelInterface
         $this->info              = $license->info;
         $this->homeserver        = $license->homeserver;
         $this->productInfo       = $license->product_info;
+        $this->activatedAt       = $license->activated_at;
         $this->createdAt         = $license->created_at;
         $this->createdBy         = $license->created_by === null ? null : intval($license->created_by);
         $this->updatedAt         = $license->updated_at;
@@ -345,6 +351,22 @@ class License extends AbstractResourceModel implements ModelInterface
     public function setTimesActivatedMax($timesActivatedMax)
     {
         $this->timesActivatedMax = $timesActivatedMax;
+    }
+
+    /**
+     * @return string
+     */
+    public function getActivatedAt()
+    {
+        return $this->activatedAt;
+    }
+
+    /**
+     * @param string $activatedAt
+     */
+    public function setActivatedAt($activatedAt)
+    {
+        $this->activatedAt = $activatedAt;
     }
 
     /**

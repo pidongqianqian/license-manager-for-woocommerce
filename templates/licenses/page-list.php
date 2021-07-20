@@ -16,9 +16,13 @@
 <?php endif; ?>
 <hr class="wp-header-end">
 
-<?php  ?>
+<style>
+#lmfwc-license-table table{
+    white-space: nowrap;
+}
+</style>
 
-<form method="post" id="lmfwc-license-table">
+<form method="post" id="lmfwc-license-table" style="overflow-x: auto">
     <?php
         $licenses->prepare_items();
         $licenses->views();

@@ -221,7 +221,8 @@ class Controller extends AbstractIntegrationController implements IntegrationCon
         $invalidKeysAmount = 0;
         $expiresAt         = null;
 
-        if ($generator->getExpiresIn() && $status == LicenseStatus::SOLD) {
+        // if ($generator->getExpiresIn() && $status == LicenseStatus::SOLD) {
+        if ($generator->getExpiresIn()) {
             $dateInterval  = 'P' . $generator->getExpiresIn() . 'D';
             $dateExpiresAt = new DateInterval($dateInterval);
             $expiresAt     = $gmtDate->add($dateExpiresAt)->format('Y-m-d H:i:s');

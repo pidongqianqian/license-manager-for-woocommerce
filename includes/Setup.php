@@ -176,6 +176,11 @@ class Setup
             $wpdb->query("ALTER TABLE `".$table1."` ADD product_info TEXT AFTER info");
         }
 
+        $activated_at_row = $wpdb->get_results("SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = '".$table1."' AND column_name = 'activated_at'"  );
+        if(empty($activated_at_row)){
+            $wpdb->query("ALTER TABLE `".$table1."` ADD activated_at DATETIME AFTER homeserver");
+        }
+
         dbDelta("
             CREATE TABLE IF NOT EXISTS $table2 (
                 `id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -401,14 +406,19 @@ class Setup
             'lmfwc_csv_export_columns' => array(
                 'id'                  => '1',
                 'order_id'            => '1',
+                'order_num'           => '1',
                 'product_id'          => '1',
+                'product_name'        => '1',
                 'user_id'             => '1',
+                'user_name'           => '1',
+                'user_email'          => '1',
                 'license_key'         => '1',
                 'expires_at'          => '1',
                 'valid_for'           => '1',
-                'status'              => '1',
+                // 'status'              => '1',
                 'times_activated'     => '1',
                 'times_activated_max' => '1',
+                'activated_at'        => '1',
                 'created_at'          => '1',
                 'created_by'          => '1',
                 'updated_at'          => '1',

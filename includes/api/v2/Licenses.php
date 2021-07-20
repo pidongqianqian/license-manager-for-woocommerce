@@ -759,7 +759,10 @@ class Licenses extends LMFWC_REST_Controller
                     'times_activated' => $timesActivatedNew,
                     'info' => serialize(['mac'=> $mac, 'ip'=> $ip])
                 );
-                if ($homeserver) $update['homeserver'] = $homeserver;
+                if ($homeserver) {
+                    $update['homeserver'] = $homeserver;
+                    $update['activated_at'] = gmdate('Y-m-d H:i:s');
+                }
             }
 
             /** @var LicenseResourceModel $updatedLicense */

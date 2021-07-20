@@ -63,7 +63,7 @@
         <tr scope="row">
             <th scope="row"><label for="bulk__times_activated_max"><?php esc_html_e('Maximum activation count', 'license-manager-for-woocommerce');?></label></th>
             <td>
-                <input name="times_activated_max" id="bulk__times_activated_max" class="regular-text" type="number">
+                <input name="times_activated_max" id="bulk__times_activated_max" class="regular-text" type="number" value="1" readonly>
                 <p class="description"><?php esc_html_e('Define how many times the license key can be marked as "activated" by using the REST API. Leave blank if you do not use the API.', 'license-manager-for-woocommerce');?></p>
             </td>
         </tr>

@@ -28,7 +28,7 @@
             <tr scope="row">
                 <th scope="row"><label><?php esc_html_e('Maximum activation count', 'license-manager-for-woocommerce');?></label></th>
                 <td>
-                    <input name="times_activated_max" id="times_activated_max" class="regular-text" type="number">
+                    <input name="times_activated_max" id="times_activated_max" class="regular-text" type="number" value="1" readonly>
                     <p class="description" id="tagline-description"><?php esc_html_e('Define how many times the license key can be marked as "activated" by using the REST API. Leave blank if you do not use the API.', 'license-manager-for-woocommerce');?></p>
                 </td>
             </tr>
@@ -79,7 +79,7 @@
 <!--            </tr>-->
 
             <!-- USERS NUMBER -->
-            <tr scope="row">
+            <!-- <tr scope="row">
                 <th scope="row"><label for="users_number"><?php esc_html_e('Number of users', 'license-manager-for-woocommerce');?></label></th>
                 <td>
                     <input name="users_number" id="users_number" class="regular-text" type="number">
@@ -88,7 +88,7 @@
                         <span><?php esc_html_e('The maximum number of server users. If you leave it blank, the number of users is not limited.', 'license-manager-for-woocommerce');?></span>
                     </p>
                 </td>
-            </tr>
+            </tr> -->
 
             <!-- SEPARATOR -->
 <!--            <tr scope="row">-->
@@ -132,8 +132,9 @@
                 <td>
                     <input name="expires_in" id="expires_in" class="regular-text" type="text">
                     <p class="description" id="tagline-description">
-                        <b><?php esc_html_e('Optional.', 'license-manager-for-woocommerce');?></b>
-                        <span><?php esc_html_e('The number of days for which the license key is valid after purchase. Leave blank if it doesn\'t expire.', 'license-manager-for-woocommerce');?></span>
+                        <!-- <b><?php esc_html_e('Optional.', 'license-manager-for-woocommerce');?></b> -->
+                        <!-- <span><?php esc_html_e('The number of days for which the license key is valid after purchase. Leave blank if it doesn\'t expire.', 'license-manager-for-woocommerce');?></span> -->
+                        <span><?php esc_html_e('The number of days for which the license key is valid after purchase', 'license-manager-for-woocommerce');?></span>
                     </p>
                 </td>
             </tr>

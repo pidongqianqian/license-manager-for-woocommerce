@@ -260,7 +260,7 @@ class GeneratorsList extends WP_List_Table
 //            'chunks'              => __('Number of chunks', 'license-manager-for-woocommerce'),
 //            'chunk_length'        => __('Chunk length', 'license-manager-for-woocommerce'),
             'times_activated_max' => __('Maximum activation count', 'license-manager-for-woocommerce'),
-            'users_number'        => __('Maximum number of users', 'license-manager-for-woocommerce'),
+            // 'users_number'        => __('Maximum number of users', 'license-manager-for-woocommerce'),
 //            'separator'           => __('Separator', 'license-manager-for-woocommerce'),
 //            'prefix'              => __('Prefix', 'license-manager-for-woocommerce'),
 //            'suffix'              => __('Suffix', 'license-manager-for-woocommerce'),

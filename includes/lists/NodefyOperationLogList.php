@@ -81,6 +81,10 @@ class NodefyOperationLogList extends WP_List_Table
         return count($this->roles) > 0 && $this->roles[0] === 'sales' ? true : false;
     }
 
+    protected function is_super_admin() {
+        return in_array( 'administrator', (array) wp_get_current_user()->roles ) ? true : false;
+    }
+
     /**
      * Creates the different status filter links at the top of the table.
      *
@@ -269,20 +273,22 @@ class NodefyOperationLogList extends WP_List_Table
             __('View', 'license-manager-for-woocommerce')
         );
 
-        // Delete
-        // $actions['delete'] = sprintf(
-        //     '<a href="%s">%s</a>',
-        //     admin_url(
-        //         sprintf(
-        //             'admin.php?page=%s&action=delete&id=%d&_wpnonce=%s',
-        //             AdminMenus::NODEFY_OPERATION_LOG_PAGE,
-        //             intval($item['id']),
-        //             wp_create_nonce('delete')
-        //         )
-        //     ),
-        //     __('Delete', 'license-manager-for-woocommerce')
-        // );
-
+        // Delete disable now
+        if ($this->is_super_admin() && false){
+            $actions['delete'] = sprintf(
+                '<a href="%s">%s</a>',
+                admin_url(
+                    sprintf(
+                        'admin.php?page=%s&action=delete&id=%d&_wpnonce=%s',
+                        AdminMenus::NODEFY_OPERATION_LOG_PAGE,
+                        intval($item['id']),
+                        wp_create_nonce('delete')
+                    )
+                ),
+                __('Permanently Delete', 'license-manager-for-woocommerce')
+            );
+        }
+        
         return $item['id'] . $this->row_actions($actions);
     }
 
@@ -471,26 +477,24 @@ class NodefyOperationLogList extends WP_List_Table
         return $html;
     }
 
-    /**
-     * Info column.
-     *
-     * @param array $item Associative array of column name and value pairs
-     *
-     * @throws Exception
-     * @return string
-     */
-    public function column_info($item)
-    {
-        if (!$item['info']) {
-            return '';
+    public function column_expired_at($item){
+        $return_str = '';
+        $obj = json_decode($item['license_backup'], true);
+        if (isset($obj['new_value']) && isset($obj['new_value']['data'])) {
+            $data = json_decode($obj['new_value']['data'], true);
+            $return_str = $data['expires_at'];
         }
+        return $return_str;
+    }
 
-        $infos = unserialize($item['info']);
-        return sprintf(
-            '<span>mac: %s<br>ip: %s</span>',
-            $infos['mac'],
-            $infos['ip']
-        );
+    public function column_users_number($item){
+        $return_str = '';
+        $obj = json_decode($item['license_backup'], true);
+        if (isset($obj['new_value']) && isset($obj['new_value']['data'])) {
+            $data = json_decode($obj['new_value']['data'], true);
+            $return_str = $data['users_number'];
+        }
+        return $return_str;
     }
 
     /**
@@ -540,6 +544,11 @@ class NodefyOperationLogList extends WP_List_Table
         $actions = array(
             // 'delete'            => __('Delete', 'license-manager-for-woocommerce'),
         );
+        $actions['export_csv'] = __('Export (CSV)', 'license-manager-for-woocommerce');
+        if ($this->is_super_admin()){
+            $actions['notice'] = __('-----------------', 'license-manager-for-woocommerce');
+            $actions['delete'] = __('Permanently Delete', 'license-manager-for-woocommerce');
+        }
 
         return $actions;
     }
@@ -555,8 +564,27 @@ class NodefyOperationLogList extends WP_List_Table
             case 'delete':
                 $this->deleteNodefyOperationLogs();
                 break;
+            case 'export_csv':
+                $this->exportNodefyOperationLogList('CSV');
+                break;
             default:
                 break;
+        }
+    }
+
+      /**
+     * Initiates a file download of the exported licenses (PDF or CSV).
+     *
+     * @param string $type
+     * @throws Exception
+     */
+    private function exportNodefyOperationLogList($type)
+    {
+        $this->verifySelection();
+
+        if ($type === 'CSV') {
+            $this->verifyNonce('export_csv');
+            do_action('lmfwc_export_nodefy_operation_log_lists_csv', (array)$_REQUEST['id']);
         }
     }
 
@@ -680,6 +708,8 @@ class NodefyOperationLogList extends WP_List_Table
             'product_id'  => __('Product', 'license-manager-for-woocommerce'),
             'user_id'     => __('Customer', 'license-manager-for-woocommerce'),
             'operation'   => __('Operation', 'license-manager-for-woocommerce'),
+            'users_number'=> __('Users Number', 'license-manager-for-woocommerce'),
+            'expired_at'  => __('Expired At', 'license-manager-for-woocommerce'),
             'note'        => __('Note', 'license-manager-for-woocommerce'),
             'created'     => __('Created', 'license-manager-for-woocommerce'),
         );

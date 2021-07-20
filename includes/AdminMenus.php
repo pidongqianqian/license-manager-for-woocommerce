@@ -81,6 +81,10 @@ class AdminMenus
         add_filter('admin_footer_text', array($this, 'adminFooterText'), 1);
     }
 
+    protected function is_super_admin() {
+        return in_array( 'administrator', (array) wp_get_current_user()->roles ) ? true : false;
+    }
+
     /**
      * Returns an array of all plugin pages.
      *
@@ -329,6 +333,9 @@ class AdminMenus
                 'category' => array( 'individual' ),
                 'orderby'  => 'name',
             );
+            if (!$this->is_super_admin()){
+                $proArgs['name'] = 'internal-test';
+            }
             $productsDropdown = wc_get_products( $proArgs );
         }
 

@@ -281,7 +281,8 @@ class Generator
 
         // Show message and redirect.
         AdminNotice::success(sprintf(__('Successfully generated %d license key(s).', 'license-manager-for-woocommerce'), $amount));
-        wp_redirect(admin_url(sprintf('admin.php?page=%s&action=generate', AdminMenus::GENERATORS_PAGE)));
+        // wp_redirect(admin_url(sprintf('admin.php?page=%s&action=generate', AdminMenus::GENERATORS_PAGE)));
+        wp_redirect(admin_url(sprintf('admin.php?page=%s', AdminMenus::LICENSES_PAGE)));
         exit();
     }
 }

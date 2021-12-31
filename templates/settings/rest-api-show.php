@@ -51,25 +51,27 @@ defined('ABSPATH') || exit;
             </tbody>
         </table>
 
-        <p class="submit">
+        <!-- <p class="submit">
             <a
                 style="color: #a00; text-decoration: none; margin-left: 10px;"
-                href="<?php echo esc_url(
-                    wp_nonce_url(
-                        add_query_arg(
-                            array(
-                                'action' => 'revoke',
-                                'key' => $keyData->getId()
-                            ),
-                            sprintf(admin_url('admin.php?page=%s&tab=rest_api'), \LicenseManagerForWooCommerce\AdminMenus::SETTINGS_PAGE)
-                        ),
-                        'revoke'
-                    )
-                );?>"
+                href="<?php 
+                // echo esc_url(
+                //     wp_nonce_url(
+                //         add_query_arg(
+                //             array(
+                //                 'action' => 'revoke',
+                //                 'key' => $keyData->getId()
+                //             ),
+                //             sprintf(admin_url('admin.php?page=%s&tab=rest_api'), \LicenseManagerForWooCommerce\AdminMenus::SETTINGS_PAGE)
+                //         ),
+                //         'revoke'
+                //     )
+                // );
+                ?>"
             >
-                <span><?php esc_html_e('Revoke key', 'license-manager-for-woocommerce'); ?></span>
+                <span><?php esc_html_e('Revoke key1', 'license-manager-for-woocommerce'); ?></span>
             </a>
-        </p>
+        </p> -->
     </form>
 
 <?php else: ?>

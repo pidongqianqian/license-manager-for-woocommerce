@@ -519,7 +519,7 @@ class General
             // ),
             array(
                 'id'         => '015',
-                'name'       => 'v2/nodefy-licenses/deactivate/?license_key={license_key}',
+                'name'       => 'v2/nodefy-licenses/deactivate/?license_key={license_key}&homeserver={homeserver}',
                 'method'     => 'GET',
                 'deprecated' => false,
             ),

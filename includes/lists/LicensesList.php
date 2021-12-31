@@ -591,6 +591,25 @@ class LicensesList extends WP_List_Table
         return $html;
     }
 
+    public function column_deactivated($item) {
+        $html = '';
+
+        if ($item['deactivated_at']) {
+            $offsetSeconds = floatval($this->gmtOffset) * 60 * 60;
+            $timestamp     = strtotime($item['deactivated_at']) + $offsetSeconds;
+            $result        = date('Y-m-d H:i:s', $timestamp);
+            $date          = new DateTime($result);
+
+            $html .= sprintf(
+                '<span><b>%s, %s</b></span>',
+                $date->format($this->dateFormat),
+                $date->format($this->timeFormat)
+            );
+        }
+
+        return $html;
+    }
+
     /**
      * Created column.
      *
@@ -1054,6 +1073,7 @@ class LicensesList extends WP_List_Table
             'is_activated'=> __('Is Activated', 'license-manager-for-woocommerce'),
             'homeserver'  => __('Homeserver', 'license-manager-for-woocommerce'),
             'activated'   => __('Activated', 'license-manager-for-woocommerce'),
+            'deactivated' => __('Deactivated', 'license-manager-for-woocommerce'),
             'created'     => __('Created', 'license-manager-for-woocommerce'),
             'updated'     => __('Updated', 'license-manager-for-woocommerce')
         );
@@ -1179,7 +1199,7 @@ class LicensesList extends WP_List_Table
             /** @var LicenseResourceModel $license */
             $license = LicenseResourceRepository::instance()->find($licenseKeyId);
 
-            if (!$license) {
+            if (!$license || $license->toArray()['timesActivated'] !== null) {
                 continue;
             }
 

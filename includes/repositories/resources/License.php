@@ -42,6 +42,7 @@ class License extends AbstractResourceRepository implements ResourceRepositoryIn
             'info'                => ColumnTypeEnum::VARCHAR,
             'homeserver'          => ColumnTypeEnum::LONGTEXT,
             'activated_at'        => ColumnTypeEnum::DATETIME,
+            'deactivated_at'      => ColumnTypeEnum::DATETIME,
         );
     }
 }

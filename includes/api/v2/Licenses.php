@@ -325,7 +325,7 @@ class Licenses extends LMFWC_REST_Controller
             return new WP_Error(
                 'lmfwc_rest_data_error',
                 sprintf(
-                    'License Key: %s could not be found.11',
+                    'License Key: %s could not be found.',
                     $licenseKey
                 ),
                 array('status' => 404)
@@ -339,6 +339,14 @@ class Licenses extends LMFWC_REST_Controller
         $licenseData['licenseKey'] = $license->getDecryptedLicenseKey();
         $now = new DateTime();
         $licenseData['currentTime'] = $now->format('Y-m-d H:i:s');
+
+        // add is internal license mark, if there is no operation log before activate
+        // means the license is internal license
+        $logs = NodefyOperationLogRepository::instance()->findAllBy(array(
+            'license_id' => $license->getId(),
+            'operation' => 'website-create'
+        ));
+        $licenseData['isInternal'] = count($logs) > 0 ? false : true;
 
         return $this->response(true, $licenseData, 200, 'v2/licenses/{license_key}');
     }
@@ -648,6 +656,16 @@ class Licenses extends LMFWC_REST_Controller
             $homeserver = $url['host'];
         }
 
+        if (!$homeserver) {
+            return new WP_Error(
+                'lmfwc_rest_data_error',
+                sprintf(
+                    'License Key: homeserver info can not be null.',
+                ),
+                array('status' => 404)
+            );
+        }
+
         if (!$licenseKey) {
             return new WP_Error(
                 'lmfwc_rest_data_error',
@@ -724,19 +742,36 @@ class Licenses extends LMFWC_REST_Controller
             );
         }
 
+        $logs = NodefyOperationLogRepository::instance()->findAllBy(array(
+            'license_id' => $license->getId(),
+            'operation' => 'website-create'
+        ));
+
         // nodefy - license key can only active once
         if ($timesActivatedMax && ($timesActivated >= $timesActivatedMax)) {
+            // if ($license->getHomeserver() === $homeserver) {
+            //     // same homeserver - pass this condition
+            //     // return the license info directly
+            //     $licenseData = $license->toArray();
+            //     unset($licenseData['hash']);
+            //     $licenseData['licenseKey'] = $license->getDecryptedLicenseKey();
+            //     // add is internal license mark, if there is no operation log before activate
+            //     // means the license is internal license
+            //     $licenseData['isInternal'] = count($logs) > 0 ? false : true;
+            //     return $this->response(true, $licenseData, 200, 'v2/licenses/activate/{license_key}');
+            // }
             return new WP_Error(
                 'lmfwc_rest_data_error',
                 'The license key has activated before',
                 array('status' => 405)
             );
         }
-        // nodefy - free trial check, if the homeserver has key before, can not use free trial
+        // nodefy - free trial check, if the homeserver has activated key before, can not use free trial
         $free_trial_str = '{"name":"Free","price":"0"}';
         $key = LicenseResourceRepository::instance()->findAllBy(array(
             'homeserver' => $homeserver,
-            'product_info' => $free_trial_str
+            'product_info' => $free_trial_str,
+            'times_activated' => 1
         ));
         if (count($key) > 0 && $license->getProductInfo() === $free_trial_str) {
             return new WP_Error(
@@ -745,11 +780,26 @@ class Licenses extends LMFWC_REST_Controller
                 array('status' => 405)
             );
         }
+
+        // nodefy - if the homeserver field is not empty before, means the customer has set the homeserver info
+        // need check whether the homeserver is same
+        if ($license->getHomeserver()) {
+            $domain = parse_url($license->getHomeserver());
+            $domain = count($domain) > 0 && isset($domain['host']) ? $domain['host'] : $license->getHomeserver();
+            if ($domain && $domain !== $homeserver) {
+                return new WP_Error(
+                    'lmfwc_rest_data_error',
+                    'This homeserver is different from the homeserver set when buy the license, invalid request',
+                    array('status' => 405)
+                );
+            }
+        }
         
         // Activate the license key
         try {
             $update = array();
-            if (!$isSameServer) {
+            $activatedAt = gmdate('Y-m-d H:i:s');
+            // if (!$isSameServer) {
                 if (!$timesActivated) {
                     $timesActivatedNew = 1;
                 } else {
@@ -761,14 +811,53 @@ class Licenses extends LMFWC_REST_Controller
                 );
                 if ($homeserver) {
                     $update['homeserver'] = $homeserver;
-                    $update['activated_at'] = gmdate('Y-m-d H:i:s');
+                    $update['activated_at'] = $activatedAt;
                 }
-            }
+            // }
 
             /** @var LicenseResourceModel $updatedLicense */
             $updatedLicense = LicenseResourceRepository::instance()->update(
                 $license->getId(),
                 $update
+            );
+
+            // add operation log
+            $product = wc_get_product($license->getProductId());
+            $data = NodefyOperationLogRepository::instance()->insert(
+                array(
+                    'license_id' => $license->getId(),
+                    'order_id'   => $license->getOrderId(),
+                    'product_id' => $license->getProductId(),
+                    'user_id'    => $license->getUserId(),
+                    'operation'   => 'api-activate',
+                    'note'      => 'activate license at ' . $activatedAt,
+                    'license_backup' => json_encode(
+                        array(
+                            'old_value' => array(
+                                'product_id' => $license->getProductId(),
+                                'data' => json_encode(array(
+                                    'name' => $product->get_name(),
+                                    'price' => $product->get_price(),
+                                    'users_number' => $license->getUsersNumber(),
+                                    'expires_at' => $license->getExpiresAt(),  
+                                    'valid_for' => $license->getValidFor(),   
+                                    'activatedAt' => $license->getDeactivatedAt(), // change
+                                ))
+                            ),
+                            'new_value' => array(
+                                'product_id' => $license->getProductId(),
+                                'data' => json_encode(array(
+                                    'name' => $product->get_name(),
+                                    'price' => $product->get_price(),
+                                    'users_number' => $license->getUsersNumber(),
+                                    'expires_at' => $license->getExpiresAt(),
+                                    'valid_for' => $license->getValidFor(), 
+                                    'activatedAt' => $activatedAt,
+                                ))
+                            )
+                        )
+                    )
+                )
             );
         } catch (Exception $e) {
             return new WP_Error(
@@ -784,11 +873,17 @@ class Licenses extends LMFWC_REST_Controller
         unset($licenseData['hash']);
         $licenseData['licenseKey'] = $updatedLicense->getDecryptedLicenseKey();
 
+        // add is internal license mark, if there is no operation log before activate
+        // means the license is internal license
+        $licenseData['isInternal'] = count($logs) > 0 ? false : true;
+
         return $this->response(true, $licenseData, 200, 'v2/licenses/activate/{license_key}');
     }
 
     /**
      * Callback for the GET licenses/deactivate/{license_key} route. This will deactivate a license key (if possible)
+     * nodefy change - deactivated only fill the deactivated_at, if the field is not empty
+     * means the license has deactivated
      *
      * @param WP_REST_Request $request
      *
@@ -846,6 +941,30 @@ class Licenses extends LMFWC_REST_Controller
             );
         }
 
+        $homeserver = sanitize_text_field($_GET['homeserver']);
+        $url = parse_url($homeserver);
+        if (count($url) > 0 && isset($url['host'])){
+            $homeserver = $url['host'];
+        }
+        if (!$homeserver) {
+            return new WP_Error(
+                'lmfwc_rest_data_error',
+                sprintf(
+                    'License Key: homeserver info can not be null.',
+                ),
+                array('status' => 404)
+            );
+        }
+        if ($homeserver !== $license->getHomeserver()) {
+            return new WP_Error(
+                'lmfwc_rest_data_error',
+                sprintf(
+                    'License Key: the homeserver info is invalid.',
+                ),
+                array('status' => 404)
+            );
+        }
+
         if (false !== $licenseExpired = $this->hasLicenseExpired($license)) {
             return $licenseExpired;
         }
@@ -867,15 +986,67 @@ class Licenses extends LMFWC_REST_Controller
             );
         }
 
+        if ($license->getDeactivatedAt()){
+            return new WP_Error(
+                'lmfwc_rest_data_error',
+                sprintf(
+                    'License Key: %s has been deactivated before.',
+                    $licenseKey
+                ),
+                array('status' => 404)
+            );
+        }
+
         // Deactivate the license key
         try {
             $timesActivatedNew = intval($timesActivated) - 1;
+            $deactivatedAt = gmdate('Y-m-d H:i:s');
 
             /** @var LicenseResourceModel $updatedLicense */
             $updatedLicense = LicenseResourceRepository::instance()->update(
                 $license->getId(),
                 array(
-                    'times_activated' => $timesActivatedNew
+                    // 'times_activated' => $timesActivatedNew
+                    'deactivated_at' => $deactivatedAt
+                )
+            );
+          
+            // add operation log
+            $product = wc_get_product($license->getProductId());
+            $data = NodefyOperationLogRepository::instance()->insert(
+                array(
+                    'license_id' => $license->getId(),
+                    'order_id'   => $license->getOrderId(),
+                    'product_id' => $license->getProductId(),
+                    'user_id'    => $license->getUserId(),
+                    'operation'   => 'api-deactivate',
+                    'note'      => 'deactivate license at ' . $deactivatedAt,
+                    'license_backup' => json_encode(
+                        array(
+                            'old_value' => array(
+                                'product_id' => $license->getProductId(),
+                                'data' => json_encode(array(
+                                    'name' => $product->get_name(),
+                                    'price' => $product->get_price(),
+                                    'users_number' => $license->getUsersNumber(),
+                                    'expires_at' => $license->getExpiresAt(),  
+                                    'valid_for' => $license->getValidFor(),   
+                                    'deactivatedAt' => $license->getDeactivatedAt(), // change
+                                ))
+                            ),
+                            'new_value' => array(
+                                'product_id' => $license->getProductId(),
+                                'data' => json_encode(array(
+                                    'name' => $product->get_name(),
+                                    'price' => $product->get_price(),
+                                    'users_number' => $license->getUsersNumber(),
+                                    'expires_at' => $license->getExpiresAt(),
+                                    'valid_for' => $license->getValidFor(), 
+                                    'deactivatedAt' => $deactivatedAt,
+                                ))
+                            )
+                        )
+                    )
                 )
             );
         } catch (Exception $e) {
@@ -891,6 +1062,13 @@ class Licenses extends LMFWC_REST_Controller
         // Remove the hash and decrypt the license key
         unset($licenseData['hash']);
         $licenseData['licenseKey'] = $updatedLicense->getDecryptedLicenseKey();
+        // add is internal license mark, if there is no operation log before activate
+        // means the license is internal license
+        $logs = NodefyOperationLogRepository::instance()->findAllBy(array(
+            'license_id' => $license->getId(),
+            'operation' => 'website-create'
+        ));
+        $licenseData['isInternal'] = count($logs) > 0 ? false : true;
 
         return $this->response(true, $licenseData, 200, 'v2/licenses/deactivate/{license_key}');
     }

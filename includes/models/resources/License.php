@@ -78,6 +78,11 @@ class License extends AbstractResourceModel implements ModelInterface
     /**
      * @var string
      */
+    protected $deactivatedAt;
+
+    /**
+     * @var string
+     */
     protected $createdAt;
 
     /**
@@ -138,6 +143,7 @@ class License extends AbstractResourceModel implements ModelInterface
         $this->homeserver        = $license->homeserver;
         $this->productInfo       = $license->product_info;
         $this->activatedAt       = $license->activated_at;
+        $this->deactivatedAt     = $license->deactivated_at;
         $this->createdAt         = $license->created_at;
         $this->createdBy         = $license->created_by === null ? null : intval($license->created_by);
         $this->updatedAt         = $license->updated_at;
@@ -367,6 +373,22 @@ class License extends AbstractResourceModel implements ModelInterface
     public function setActivatedAt($activatedAt)
     {
         $this->activatedAt = $activatedAt;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDeactivatedAt()
+    {
+        return $this->deactivatedAt;
+    }
+
+    /**
+     * @param string $deactivatedAt
+     */
+    public function setDeactivatedAt($deactivatedAt)
+    {
+        $this->deactivatedAt = $deactivatedAt;
     }
 
     /**

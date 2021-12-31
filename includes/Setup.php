@@ -181,6 +181,11 @@ class Setup
             $wpdb->query("ALTER TABLE `".$table1."` ADD activated_at DATETIME AFTER homeserver");
         }
 
+        $deactivated_at_row = $wpdb->get_results("SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = '".$table1."' AND column_name = 'deactivated_at'"  );
+        if(empty($deactivated_at_row)){
+            $wpdb->query("ALTER TABLE `".$table1."` ADD deactivated_at DATETIME AFTER homeserver");
+        }
+
         dbDelta("
             CREATE TABLE IF NOT EXISTS $table2 (
                 `id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -419,6 +424,7 @@ class Setup
                 'times_activated'     => '1',
                 'times_activated_max' => '1',
                 'activated_at'        => '1',
+                'deactivated_at'      => '1',
                 'created_at'          => '1',
                 'created_by'          => '1',
                 'updated_at'          => '1',

@@ -149,6 +149,7 @@ class Export
                 'times_activated'     => true,
                 'times_activated_max' => true,
                 'activated_at'        => true,
+                'deactivated_at'      => true,
                 'created_at'          => true,
                 'created_by'          => true,
                 'updated_at'          => true,

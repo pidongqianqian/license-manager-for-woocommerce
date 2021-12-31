@@ -137,6 +137,10 @@ class Tools
                 'name' => __('Activated at', 'license-manager-for-woocommerce')
             ),
             array(
+                'slug' => 'deactivated_at',
+                'name' => __('Deactivated at', 'license-manager-for-woocommerce')
+            ),
+            array(
                 'slug' => 'created_at',
                 'name' => __('Created at', 'license-manager-for-woocommerce')
             ),

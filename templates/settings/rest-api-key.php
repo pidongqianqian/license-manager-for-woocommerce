@@ -121,26 +121,28 @@ defined('ABSPATH') || exit;
     <?php else: ?>
         <p class="submit">
             <?php submit_button(__('Save changes', 'license-manager-for-woocommerce'), 'primary', 'update_api_key', false); ?>
-            <a
+            <!-- <a
                 style="color: #a00; text-decoration: none; margin-left: 10px;"
-                href="<?php echo esc_url(
-                    wp_nonce_url(
-                        add_query_arg(
-                            array(
-                                'action' => 'revoke',
-                                'key' => $keyId
-                            ),
-                            sprintf(
-                                admin_url('admin.php?page=%s&tab=rest_api'),
-                                \LicenseManagerForWooCommerce\AdminMenus::SETTINGS_PAGE
-                            )
-                        ),
-                        'revoke'
-                    )
-                );?>"
+                href="<?php 
+                // echo esc_url(
+                //     wp_nonce_url(
+                //         add_query_arg(
+                //             array(
+                //                 'action' => 'revoke',
+                //                 'key' => $keyId
+                //             ),
+                //             sprintf(
+                //                 admin_url('admin.php?page=%s&tab=rest_api'),
+                //                 \LicenseManagerForWooCommerce\AdminMenus::SETTINGS_PAGE
+                //             )
+                //         ),
+                //         'revoke'
+                //     )
+                // );
+                ?>"
             >
                 <span><?php esc_html_e('Revoke key', 'license-manager-for-woocommerce'); ?></span>
-            </a>
+            </a> -->
         </p>
     <?php endif; ?>
 </form>

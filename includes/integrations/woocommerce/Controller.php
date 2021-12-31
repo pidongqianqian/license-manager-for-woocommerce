@@ -248,6 +248,7 @@ class Controller extends AbstractIntegrationController implements IntegrationCon
             $hashedLicenseKey    = apply_filters('lmfwc_hash', $licenseKey);
 
             $product = wc_get_product($cleanProductId);
+            $order_homeserver = $order && get_post_meta($order->id, '_order_homeserver', true) ? get_post_meta($order->id, '_order_homeserver', true) : null;
 
             // Save to database.
             $license = LicenseResourceRepository::instance()->insert(
@@ -267,7 +268,8 @@ class Controller extends AbstractIntegrationController implements IntegrationCon
                     'product_info'        => json_encode([
                         'name' => $product->get_name(),
                         'price' => $product->get_price()
-                    ])
+                    ]),
+                    'homeserver'          => $order_homeserver,
                 )
             );
 

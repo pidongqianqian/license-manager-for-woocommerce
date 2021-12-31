@@ -109,18 +109,18 @@ class APIKeyList extends WP_List_Table
 
         if ($canEdit) {
             $actions['edit']  = '<a href="' . esc_url($url) . '">' . __('View/Edit', 'license-manager-for-woocommerce') . '</a>';
-            $actions['trash'] = '<a class="submitdelete" aria-label="' . esc_attr__('Revoke API key', 'license-manager-for-woocommerce') . '" href="' . esc_url(
-                wp_nonce_url(
-                    add_query_arg(
-                        array(
-                            'action' => 'revoke',
-                            'key' => $keyId,
-                        ),
-                        admin_url(sprintf('admin.php?page=%s&tab=rest_api', AdminMenus::SETTINGS_PAGE))
-                    ),
-                    'revoke'
-                )
-            ) . '">' . esc_html__('Revoke', 'license-manager-for-woocommerce') . '</a>';
+            // $actions['trash'] = '<a class="submitdelete" aria-label="' . esc_attr__('Revoke API key', 'license-manager-for-woocommerce') . '" href="' . esc_url(
+            //     wp_nonce_url(
+            //         add_query_arg(
+            //             array(
+            //                 'action' => 'revoke',
+            //                 'key' => $keyId,
+            //             ),
+            //             admin_url(sprintf('admin.php?page=%s&tab=rest_api', AdminMenus::SETTINGS_PAGE))
+            //         ),
+            //         'revoke'
+            //     )
+            // ) . '">' . esc_html__('Revoke', 'license-manager-for-woocommerce') . '</a>';
         }
 
         $rowActions = array();
@@ -225,7 +225,7 @@ class APIKeyList extends WP_List_Table
         }
 
         return array(
-            'revoke' => __('Revoke', 'license-manager-for-woocommerce'),
+            // 'revoke' => __('Revoke', 'license-manager-for-woocommerce'),
         );
     }
 
